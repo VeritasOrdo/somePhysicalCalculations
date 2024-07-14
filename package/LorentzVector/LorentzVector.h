@@ -8,7 +8,7 @@ class LorentzVector {
     public:
         LorentzVector(double t, double x, double y, double z);
         double get(int i);
-        double operator[](int i);
+        double &operator[](int i);
         double dot(LorentzVector other);
         double operator*(LorentzVector other);
         LorentzVector add(LorentzVector other);

@@ -11,7 +11,7 @@ double LorentzVector::get(int i) {
     return components[i];
 }
 
-double LorentzVector::operator[](int i) {
+double &LorentzVector::operator[](int i) {
     return components[i];
 }
 
