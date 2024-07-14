@@ -4,7 +4,7 @@
 ElectronInCounterpropagatingLaser::ElectronInCounterpropagatingLaser(double momentumZPrime,double momentumXPrime,double fieldParameter1,double fieldParameter2,double properTime) {
     double momentumYPrime = 0;
     double electronMass = 0.511;
-    double omega = 1;
+    double omega = 10;
     this->fieldParameter1 = fieldParameter1;
     this->fieldParameter2 = fieldParameter2;
     this->properTime = properTime;
@@ -38,8 +38,8 @@ ElectronInCounterpropagatingLaser::ElectronInCounterpropagatingLaser(double mome
     this->electronLorentzCoordinate = new LorentzVector(
         ((*this->electronLorentzMomentumPrime)[0]/electronMass)*this->properTime+
         (*this->electronLorentzMomentumPrime)[1]*omega*(
-            ((electronMass*fieldParameter1)/((omega*(*this->electronLorentzMomentumPrime)[0]*(1-this->electronVelocityPrime[2]))*(omega*(*this->electronLorentzMomentumPrime)[0]*(1-this->electronVelocityPrime[2]))))*std::cos(this->phase1)+
-            ((electronMass*fieldParameter2)/((omega*(*this->electronLorentzMomentumPrime)[0]*(1+this->electronVelocityPrime[2]))*(omega*(*this->electronLorentzMomentumPrime)[0]*(1+this->electronVelocityPrime[2]))))*std::cos(this->phase2)
+            ((electronMass*fieldParameter1)/((omega*(*this->electronLorentzMomentumPrime)[0]*(1-this->electronVelocityPrime[2]))*(omega*(*this->electronLorentzMomentumPrime)[0]*(1-this->electronVelocityPrime[2]))))*std::sin(this->phase1)+
+            ((electronMass*fieldParameter2)/((omega*(*this->electronLorentzMomentumPrime)[0]*(1+this->electronVelocityPrime[2]))*(omega*(*this->electronLorentzMomentumPrime)[0]*(1+this->electronVelocityPrime[2]))))*std::sin(this->phase2)
         )
         ,
         ((*this->electronLorentzMomentumPrime)[1]/electronMass)*this->properTime+
