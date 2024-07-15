@@ -4,7 +4,7 @@
 ElectronInCounterpropagatingLaser::ElectronInCounterpropagatingLaser(double momentumZPrime,double momentumXPrime,double fieldParameter1,double fieldParameter2,double properTime) {
     double momentumYPrime = 0;
     double electronMass = 0.511;
-    double omega = 10;
+    double omega = 1.55;
     this->fieldParameter1 = fieldParameter1;
     this->fieldParameter2 = fieldParameter2;
     this->properTime = properTime;
