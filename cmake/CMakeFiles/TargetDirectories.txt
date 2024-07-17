@@ -1,3 +1,0 @@
-/home/Veritas_Ordo/Physics/cmake/CMakeFiles/test.dir
-/home/Veritas_Ordo/Physics/cmake/CMakeFiles/edit_cache.dir
-/home/Veritas_Ordo/Physics/cmake/CMakeFiles/rebuild_cache.dir

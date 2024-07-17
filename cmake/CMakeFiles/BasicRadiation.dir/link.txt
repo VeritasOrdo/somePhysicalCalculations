@@ -1,2 +1,0 @@
-/usr/bin/ar qc libBasicRadiation.a CMakeFiles/BasicRadiation.dir/package/RadiationOfElectron/BasicRadiation/BasicRadiation.cpp.o
-/usr/bin/ranlib libBasicRadiation.a

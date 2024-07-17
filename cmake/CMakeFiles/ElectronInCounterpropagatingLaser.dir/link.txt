@@ -1,2 +1,0 @@
-/usr/bin/ar qc libElectronInCounterpropagatingLaser.a CMakeFiles/ElectronInCounterpropagatingLaser.dir/package/ElectronInCounterpropagatingLaser/ElectronInCounterpropagatingLaser.cpp.o
-/usr/bin/ranlib libElectronInCounterpropagatingLaser.a

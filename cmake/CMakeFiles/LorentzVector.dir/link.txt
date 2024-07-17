@@ -1,2 +1,0 @@
-/usr/bin/ar qc libLorentzVector.a CMakeFiles/LorentzVector.dir/package/LorentzVector/LorentzVector.cpp.o
-/usr/bin/ranlib libLorentzVector.a

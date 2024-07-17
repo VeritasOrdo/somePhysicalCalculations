@@ -1,2 +1,0 @@
-/usr/bin/ar qc libBasicMathFunctionDefinition.a CMakeFiles/BasicMathFunctionDefinition.dir/package/BasicMathFunctionDefinition/BasicMathFunctionDefinition.cpp.o
-/usr/bin/ranlib libBasicMathFunctionDefinition.a
