@@ -1,6 +1,7 @@
 #include<vector>
 #include<string>
 #include<complex>
+#pragma once
 
 class LorentzVector {
     private:

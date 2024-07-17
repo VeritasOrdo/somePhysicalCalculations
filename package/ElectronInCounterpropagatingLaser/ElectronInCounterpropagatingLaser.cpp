@@ -3,8 +3,7 @@
 
 ElectronInCounterpropagatingLaser::ElectronInCounterpropagatingLaser(double momentumZPrime,double momentumXPrime,double fieldParameter1,double fieldParameter2,double properTime) {
     double momentumYPrime = 0;
-    double electronMass = 0.511;
-    double omega = 1.55;
+    double electronMass = 511000;
     this->fieldParameter1 = fieldParameter1;
     this->fieldParameter2 = fieldParameter2;
     this->properTime = properTime;
@@ -57,6 +56,8 @@ ElectronInCounterpropagatingLaser::ElectronInCounterpropagatingLaser(double mome
             ((electronMass*fieldParameter2)/((omega*(*this->electronLorentzMomentumPrime)[0]*(1+this->electronVelocityPrime[2]))*(omega*((*this->electronLorentzMomentumPrime)[0])*(1+this->electronVelocityPrime[2]))))*std::sin(this->phase2)
         )
     );
+    this->omega1 = omega*(1-this->electronVelocityPrime[2]);
+    this->omega2 = omega*(1+this->electronVelocityPrime[2]);
 }
 
 LorentzVector ElectronInCounterpropagatingLaser::getElectronLorentzMomentum() {
@@ -87,12 +88,44 @@ double ElectronInCounterpropagatingLaser::getPhase2() {
     return this->phase2;
 }
 
+double ElectronInCounterpropagatingLaser::getOmega1() {
+    return this->omega1;
+}
+
+double ElectronInCounterpropagatingLaser::getOmega2() {
+    return this->omega2;
+}
+
 std::vector<double> ElectronInCounterpropagatingLaser::getElectronVelocity() {
     return this->electronVelocity;
 }
 
 std::vector<double> ElectronInCounterpropagatingLaser::getElectronVelocityPrime() {
     return this->electronVelocityPrime;
+}
+
+double ElectronInCounterpropagatingLaser::getEnergy() {
+    return (*this->electronLorentzMomentum)[0];
+}
+
+double ElectronInCounterpropagatingLaser::getEnergyPrime() {
+    return (*this->electronLorentzMomentumPrime)[0];
+}
+
+double ElectronInCounterpropagatingLaser::getInitialMomentumX() {
+    return (*this->electronLorentzMomentumPrime)[1];
+}
+
+double ElectronInCounterpropagatingLaser::getInitialMomentumZ() {
+    return (*this->electronLorentzMomentumPrime)[3];
+}
+
+double ElectronInCounterpropagatingLaser::getVelocityZPrime() {
+    return this->electronVelocityPrime[2];
+}
+
+double ElectronInCounterpropagatingLaser::getVelocityXPrime() {
+    return this->electronVelocityPrime[0];
 }
 
 ElectronInCounterpropagatingLaser::~ElectronInCounterpropagatingLaser() {

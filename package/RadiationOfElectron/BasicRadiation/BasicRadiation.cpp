@@ -1,33 +1,33 @@
 #include "BasicRadiation.h"
 #include <iostream>
+#include <algorithm>
+#include <chrono>
 
-BasicRadiationOfElectronInCounterpropagatingLaser::BasicRadiationOfElectronInCounterpropagatingLaser(ElectronInCounterpropagatingLaser *electronInCounterpropagatingLaser,double photonEnergy,double emissionAzimuthalAngle) {
-    this->electronInCounterpropagatingLaser = electronInCounterpropagatingLaser;
+BasicRadiationOfElectronInCounterpropagatingLaser::BasicRadiationOfElectronInCounterpropagatingLaser(double momentumZPrime,double momentumXPrime,double fieldParameter1,double fieldParameter2,double properTime,double photonEnergy,double emissionAzimuthalAngle) : ElectronInCounterpropagatingLaser(momentumZPrime,momentumXPrime,fieldParameter1,fieldParameter2,properTime) {
     this->photonEnergy = photonEnergy;
     this->emissionAzimuthalAngle = emissionAzimuthalAngle;
-    this->energyRatio = this->photonEnergy/(this->electronInCounterpropagatingLaser->getElectronLorentzMomentum()[0]-photonEnergy);
-    this->differentialEmissionIntensity = -99999999; 
-    std::cout << "Now the differential emission intensity has not been calculated." << std::endl;  
-    std::cout << "Please use the function calculateDifferentialEmissionIntensity() to calculate the differential emission intensity." << std::endl;
+    this->residualEnergy = this->getEnergy()-this->photonEnergy;
+    this->energyRatio = this->photonEnergy/this->residualEnergy;
+    this->differentialEmissionIntensity = 0;
+    std::cout << "the differential emission intensity has not been calculated yet" << std::endl;
+    std::cout << "Please call the calculateDifferentialEmissionIntensity() method to calculate the differential emission intensity" << std::endl;
 }
 
-std::vector<double> BasicRadiationOfElectronInCounterpropagatingLaser::calculateEmissionPolarAngle(double lableLeft,double lableRight){
+std::vector<double> BasicRadiationOfElectronInCounterpropagatingLaser::calculateEmissionPolarAngle(int labelLeft, int labelRight) {
     std::vector<double> emissionPolarAngle={};
-    std::cout << "omega: " << omega << std::endl;
-    double rho = ((this->electronInCounterpropagatingLaser->getElectronLorentzMomentum()[0]-photonEnergy)/(this->electronInCounterpropagatingLaser->getElectronLorentzMomentum()[0]*photonEnergy))*(lableLeft*(1-this->electronInCounterpropagatingLaser->getElectronVelocity()[2])*omega+lableRight*(1+this->electronInCounterpropagatingLaser->getElectronVelocity()[2])*omega);
-    std::cout << "emission rho: " << rho << std::endl;
-    double delta = this->electronInCounterpropagatingLaser->getElectronVelocity()[2]*this->electronInCounterpropagatingLaser->getElectronVelocity()[2]+this->electronInCounterpropagatingLaser->getElectronVelocity()[0]*this->electronInCounterpropagatingLaser->getElectronVelocity()[0]*std::cos(this->emissionAzimuthalAngle)*std::cos(this->emissionAzimuthalAngle)-(1-rho)*(1-rho);
-    std::cout << "emission delta: " << delta << std::endl;
+    double rho = (1/(this->getEnergy()*energyRatio))*(labelLeft*this->getOmega1()+labelRight*this->getOmega2());
+    double delta = this->getVelocityZPrime()*this->getVelocityZPrime()+this->getVelocityXPrime()*this->getVelocityXPrime()*std::cos(this->emissionAzimuthalAngle)*std::cos(this->emissionAzimuthalAngle)-(1-rho)*(1-rho);
+    if (delta<0){
+        return {};
+    }
     double emissionPolarAngle1 = std::acos(
-        (this->electronInCounterpropagatingLaser->getElectronVelocity()[2]*(1-rho)+this->electronInCounterpropagatingLaser->getElectronVelocity()[0]*std::cos(this->emissionAzimuthalAngle)*std::sqrt(delta))/
-        (this->electronInCounterpropagatingLaser->getElectronVelocity()[2]*this->electronInCounterpropagatingLaser->getElectronVelocity()[2]+this->electronInCounterpropagatingLaser->getElectronVelocity()[0]*this->electronInCounterpropagatingLaser->getElectronVelocity()[0]*std::cos(this->emissionAzimuthalAngle)*std::cos(this->emissionAzimuthalAngle))
+        (this->getVelocityZPrime()*(1-rho)+this->getVelocityXPrime()*std::cos(this->emissionAzimuthalAngle)*std::sqrt(delta))/
+        (this->getVelocityZPrime()*this->getVelocityZPrime()+this->getVelocityXPrime()*this->getVelocityXPrime()*std::cos(this->emissionAzimuthalAngle)*std::cos(this->emissionAzimuthalAngle))
     );
     double emissionPolarAngle2 = std::acos(
-        (this->electronInCounterpropagatingLaser->getElectronVelocity()[2]*(1-rho)-this->electronInCounterpropagatingLaser->getElectronVelocity()[0]*std::cos(this->emissionAzimuthalAngle)*std::sqrt(delta))/
-        (this->electronInCounterpropagatingLaser->getElectronVelocity()[2]*this->electronInCounterpropagatingLaser->getElectronVelocity()[2]+this->electronInCounterpropagatingLaser->getElectronVelocity()[0]*this->electronInCounterpropagatingLaser->getElectronVelocity()[0]*std::cos(this->emissionAzimuthalAngle)*std::cos(this->emissionAzimuthalAngle))
+        (this->getVelocityZPrime()*(1-rho)-this->getVelocityXPrime()*std::cos(this->emissionAzimuthalAngle)*std::sqrt(delta))/
+        (this->getVelocityZPrime()*this->getVelocityZPrime()+this->getVelocityXPrime()*this->getVelocityXPrime()*std::cos(this->emissionAzimuthalAngle)*std::cos(this->emissionAzimuthalAngle))
     );
-    std::cout << "emission polar angle 1: " << emissionPolarAngle1 << std::endl;
-    std::cout << "emission polar angle 2: " << emissionPolarAngle2 << std::endl;
     if(std::sin(emissionPolarAngle1)>0){
         emissionPolarAngle.push_back(emissionPolarAngle1);
     }
@@ -37,59 +37,176 @@ std::vector<double> BasicRadiationOfElectronInCounterpropagatingLaser::calculate
     return emissionPolarAngle;
 }
 
-double BasicRadiationOfElectronInCounterpropagatingLaser::trigonometricCoefficient1(double lableLeft,double lableRight,double emissionPolarAngle) {
-    return (electronMass*this->electronInCounterpropagatingLaser->getFieldParameter1()*energyRatio*std::sin(emissionPolarAngle))/((1-this->electronInCounterpropagatingLaser->getElectronVelocity()[2])*omega);
+double BasicRadiationOfElectronInCounterpropagatingLaser::calculateZ1X(double emissionPolarAngle) {
+    return ((electronMass*this->getFieldParameter1()*energyRatio)/(this->getOmega1()))*(
+        std::cos(this->emissionAzimuthalAngle)*std::sin(emissionPolarAngle)+
+        ((this->getVelocityXPrime()*omega)/(this->getOmega1()*this->getEnergy()))*(std::cos(emissionPolarAngle)-1)
+    );
 }
 
-double BasicRadiationOfElectronInCounterpropagatingLaser::trigonometricCoefficient2(double lableLeft,double lableRight,double emissionPolarAngle) {
-    return (electronMass*this->electronInCounterpropagatingLaser->getFieldParameter2()*energyRatio*std::sin(emissionPolarAngle))/((1+this->electronInCounterpropagatingLaser->getElectronVelocity()[2])*omega);
+double BasicRadiationOfElectronInCounterpropagatingLaser::calculateZ1Y(double emissionPolarAngle) {
+    return ((electronMass*this->getFieldParameter1()*energyRatio)/(this->getOmega1()))*std::sin(this->emissionAzimuthalAngle)*std::sin(emissionPolarAngle);
 }
 
-double BasicRadiationOfElectronInCounterpropagatingLaser::trigonometricCoefficient3(double lableLeft,double lableRight,double emissionPolarAngle) {
-    return ((electronMass*electronMass*this->electronInCounterpropagatingLaser->getFieldParameter1()*this->electronInCounterpropagatingLaser->getFieldParameter2()*energyRatio)/(this->electronInCounterpropagatingLaser->getElectronVelocity()[2]*this->electronInCounterpropagatingLaser->getElectronLorentzMomentum()[0]*(2*this->electronInCounterpropagatingLaser->getElectronVelocity()[2]*omega)))*std::cos(this->emissionAzimuthalAngle);
+double BasicRadiationOfElectronInCounterpropagatingLaser::calculateZ2X(double emissionPolarAngle) {
+    return ((electronMass*this->getFieldParameter2()*energyRatio)/(this->getOmega2()))*(
+        std::cos(this->emissionAzimuthalAngle)*std::sin(emissionPolarAngle)-
+        ((this->getVelocityXPrime()*omega)/(this->getOmega2()*this->getEnergy()))*(std::cos(emissionPolarAngle)+1)
+    );
 }
 
-std::complex<double> BasicRadiationOfElectronInCounterpropagatingLaser::emissionMatrixElementT(double lableLeft,double lableRight,double emissionPolarAngle) {
-    std::cout << "===========================================" << std::endl;
-    std::complex<double> emissionMatrixElementT = 0;
-    for (int lable3=0;;lable3++){
-        double lable1 = lableLeft-lable3;
-        double lable2 = lableRight+lable3;
-        std::cout << "lable1:"<< lable1 << std::endl;
-        std::cout << "lable2:"<< lable2 << std::endl;
-        std::cout << "relatedBesselFunctionZeroKind(3): " << BasicMathFunctionDefinition::relatedBesselFunctionZeroKind(lable3,this->trigonometricCoefficient3(lableLeft,lableRight,emissionPolarAngle),0) << std::endl;
-        std::cout << "relatedBesselFunctionZeroKind(1): " << BasicMathFunctionDefinition::relatedBesselFunctionZeroKind(lable1,this->trigonometricCoefficient1(lableLeft,lableRight,emissionPolarAngle),this->emissionAzimuthalAngle) << std::endl;
-        std::cout << "relatedBesselFunctionZeroKind(2): " << BasicMathFunctionDefinition::relatedBesselFunctionZeroKind(lable2,this->trigonometricCoefficient2(lableLeft,lableRight,emissionPolarAngle),this->emissionAzimuthalAngle) << std::endl;
-        std::cout << "relatedBesselFunctionFirstKind(1): " << BasicMathFunctionDefinition::relatedBesselFunctionFirstKind(lable1,this->trigonometricCoefficient1(lableLeft,lableRight,emissionPolarAngle),this->emissionAzimuthalAngle) << std::endl;
-        std::cout << "relatedBesselFunctionFirstKind(2): " << BasicMathFunctionDefinition::relatedBesselFunctionFirstKind(lable2,this->trigonometricCoefficient2(lableLeft,lableRight,emissionPolarAngle),this->emissionAzimuthalAngle) << std::endl;
-        if(
-            BasicMathFunctionDefinition::relatedBesselFunctionZeroKind(lable3,this->trigonometricCoefficient3(lableLeft,lableRight,emissionPolarAngle),0).real()<-90000000&&
-            BasicMathFunctionDefinition::relatedBesselFunctionZeroKind(lable1,this->trigonometricCoefficient1(lableLeft,lableRight,emissionPolarAngle),this->emissionAzimuthalAngle).real()<-90000000&&
-            BasicMathFunctionDefinition::relatedBesselFunctionZeroKind(lable2,this->trigonometricCoefficient2(lableLeft,lableRight,emissionPolarAngle),this->emissionAzimuthalAngle).real()<-90000000&&
-            BasicMathFunctionDefinition::relatedBesselFunctionFirstKind(lable1,this->trigonometricCoefficient1(lableLeft,lableRight,emissionPolarAngle),this->emissionAzimuthalAngle).real()<-90000000&&
-            BasicMathFunctionDefinition::relatedBesselFunctionFirstKind(lable2,this->trigonometricCoefficient2(lableLeft,lableRight,emissionPolarAngle),this->emissionAzimuthalAngle).real()<-90000000
-        ){
-            std::cout << "label3: " << lable3 << std::endl;
-            break;
-        }
-        emissionMatrixElementT+=(
-            BasicMathFunctionDefinition::relatedBesselFunctionZeroKind(lable3,this->trigonometricCoefficient3(lableLeft,lableRight,emissionPolarAngle),0)*(
-                (this->electronInCounterpropagatingLaser->getElectronLorentzMomentum()[0]/electronMass)*BasicMathFunctionDefinition::relatedBesselFunctionZeroKind(lable1,this->trigonometricCoefficient1(lableLeft,lableRight,emissionPolarAngle),this->emissionAzimuthalAngle)*BasicMathFunctionDefinition::relatedBesselFunctionZeroKind(lable2,this->trigonometricCoefficient2(lableLeft,lableRight,emissionPolarAngle),this->emissionAzimuthalAngle)+
-                ((this->electronInCounterpropagatingLaser->getElectronLorentzMomentumPrime()[1]*omega*this->electronInCounterpropagatingLaser->getFieldParameter1())/((1-this->electronInCounterpropagatingLaser->getElectronVelocity()[2])*omega*this->electronInCounterpropagatingLaser->getElectronLorentzMomentum()[0]))*BasicMathFunctionDefinition::relatedBesselFunctionFirstKind(lable1,this->trigonometricCoefficient1(lableLeft,lableRight,emissionPolarAngle),this->emissionAzimuthalAngle)*BasicMathFunctionDefinition::relatedBesselFunctionZeroKind(lable2,this->trigonometricCoefficient2(lableLeft,lableRight,emissionPolarAngle),this->emissionAzimuthalAngle)+
-                ((this->electronInCounterpropagatingLaser->getElectronLorentzMomentumPrime()[1]*omega*this->electronInCounterpropagatingLaser->getFieldParameter2())/((1+this->electronInCounterpropagatingLaser->getElectronVelocity()[2])*omega*this->electronInCounterpropagatingLaser->getElectronLorentzMomentum()[0]))*BasicMathFunctionDefinition::relatedBesselFunctionZeroKind(lable1,this->trigonometricCoefficient1(lableLeft,lableRight,emissionPolarAngle),this->emissionAzimuthalAngle)*BasicMathFunctionDefinition::relatedBesselFunctionFirstKind(lable2,this->trigonometricCoefficient2(lableLeft,lableRight,emissionPolarAngle),this->emissionAzimuthalAngle)
-            )
-        );
-    }
-    return emissionMatrixElementT;
+double BasicRadiationOfElectronInCounterpropagatingLaser::calculateZ2Y(double emissionPolarAngle) {
+    return ((electronMass*this->getFieldParameter2()*energyRatio)/(this->getOmega2()))*std::sin(this->emissionAzimuthalAngle)*std::sin(emissionPolarAngle);
+}
+
+double BasicRadiationOfElectronInCounterpropagatingLaser::trigonometricCoefficient1(double emissionPolarAngle) {
+    return std::sqrt(this->calculateZ1X(emissionPolarAngle)*this->calculateZ1X(emissionPolarAngle)+this->calculateZ1Y(emissionPolarAngle)*this->calculateZ1Y(emissionPolarAngle));
+}
+
+double BasicRadiationOfElectronInCounterpropagatingLaser::trigonometricCoefficient2(double emissionPolarAngle) {
+    return std::sqrt(this->calculateZ2X(emissionPolarAngle)*this->calculateZ2X(emissionPolarAngle)+this->calculateZ2Y(emissionPolarAngle)*this->calculateZ2Y(emissionPolarAngle));
+}
+
+double BasicRadiationOfElectronInCounterpropagatingLaser::trigonometricCoefficient3(double emissionPolarAngle) {
+    return ((electronMass*electronMass*this->getFieldParameter1()*this->getFieldParameter2()*energyRatio)/(this->getVelocityZPrime()*2*this->getVelocityZPrime()*omega*this->getEnergy()))*std::cos(emissionPolarAngle);
+}
+
+double BasicRadiationOfElectronInCounterpropagatingLaser::auxiliaryAngle1(double emissionPolarAngle) {
+    return atan2(this->calculateZ1Y(emissionPolarAngle),this->calculateZ1X(emissionPolarAngle));
+}
+
+double BasicRadiationOfElectronInCounterpropagatingLaser::auxiliaryAngle2(double emissionPolarAngle) {
+    return atan2(this->calculateZ2Y(emissionPolarAngle),this->calculateZ2X(emissionPolarAngle));
+}
+
+std::complex<double> BasicRadiationOfElectronInCounterpropagatingLaser::spectralComponentT(int labelLeft, int labelRight, int label3, double emissionPolarAngle) {
+    double label1 = labelLeft-label3;
+    double label2 = labelRight+label3;
+    std::complex<double> zero1 = BasicMathFunctionDefinition::relatedBesselFunctionZeroKind(label1,this->trigonometricCoefficient1(emissionPolarAngle),this->auxiliaryAngle1(emissionPolarAngle));
+    std::complex<double> zero2 = BasicMathFunctionDefinition::relatedBesselFunctionZeroKind(label2,this->trigonometricCoefficient2(emissionPolarAngle),this->auxiliaryAngle2(emissionPolarAngle));
+    std::complex<double> zero3 = BasicMathFunctionDefinition::relatedBesselFunctionZeroKind(label3,this->trigonometricCoefficient3(emissionPolarAngle),0);
+    std::complex<double> first1 = BasicMathFunctionDefinition::relatedBesselFunctionFirstKind(label1,this->trigonometricCoefficient1(emissionPolarAngle),this->auxiliaryAngle1(emissionPolarAngle));
+    std::complex<double> first2 = BasicMathFunctionDefinition::relatedBesselFunctionFirstKind(label2,this->trigonometricCoefficient2(emissionPolarAngle),this->auxiliaryAngle2(emissionPolarAngle));
+    std::complex<double> spectralComponentT = zero3*(
+        (this->getEnergy()/electronMass)*zero1*zero2+
+        ((this->getInitialMomentumX()*omega*this->getFieldParameter1())/(this->getOmega1()*this->getEnergy()))*first1*zero2+
+        ((this->getInitialMomentumX()*omega*this->getFieldParameter2())/(this->getOmega2()*this->getEnergy()))*zero1*first2
+    );
+    return spectralComponentT;
+}
+
+std::complex<double> BasicRadiationOfElectronInCounterpropagatingLaser::spectralComponentX(int labelLeft, int labelRight, int label3, double emissionPolarAngle) {
+    double label1 = labelLeft-label3;
+    double label2 = labelRight+label3;
+    std::complex<double> zero1 = BasicMathFunctionDefinition::relatedBesselFunctionZeroKind(label1,this->trigonometricCoefficient1(emissionPolarAngle),this->auxiliaryAngle1(emissionPolarAngle));
+    std::complex<double> zero2 = BasicMathFunctionDefinition::relatedBesselFunctionZeroKind(label2,this->trigonometricCoefficient2(emissionPolarAngle),this->auxiliaryAngle2(emissionPolarAngle));
+    std::complex<double> zero3 = BasicMathFunctionDefinition::relatedBesselFunctionZeroKind(label3,this->trigonometricCoefficient3(emissionPolarAngle),0);
+    std::complex<double> first1 = BasicMathFunctionDefinition::relatedBesselFunctionFirstKind(label1,this->trigonometricCoefficient1(emissionPolarAngle),this->auxiliaryAngle1(emissionPolarAngle));
+    std::complex<double> first2 = BasicMathFunctionDefinition::relatedBesselFunctionFirstKind(label2,this->trigonometricCoefficient2(emissionPolarAngle),this->auxiliaryAngle2(emissionPolarAngle));
+    std::complex<double> spectralComponentX = zero3*(
+        (this->getInitialMomentumX()/electronMass)*zero1*zero2+
+        this->getFieldParameter1()*first1*zero2-
+        this->getFieldParameter2()*zero1*first2
+    );
+    return spectralComponentX;
+} 
+
+std::complex<double> BasicRadiationOfElectronInCounterpropagatingLaser::spectralComponentY(int labelLeft, int labelRight, int label3, double emissionPolarAngle) {
+    double label1 = labelLeft-label3;
+    double label2 = labelRight+label3;
+    std::complex<double> zero1 = BasicMathFunctionDefinition::relatedBesselFunctionZeroKind(label1,this->trigonometricCoefficient1(emissionPolarAngle),this->auxiliaryAngle1(emissionPolarAngle));
+    std::complex<double> zero2 = BasicMathFunctionDefinition::relatedBesselFunctionZeroKind(label2,this->trigonometricCoefficient2(emissionPolarAngle),this->auxiliaryAngle2(emissionPolarAngle));
+    std::complex<double> zero3 = BasicMathFunctionDefinition::relatedBesselFunctionZeroKind(label3,this->trigonometricCoefficient3(emissionPolarAngle),0);
+    std::complex<double> second1 = BasicMathFunctionDefinition::relatedBesselFunctionSecondKind(label1,this->trigonometricCoefficient1(emissionPolarAngle),this->auxiliaryAngle1(emissionPolarAngle));
+    std::complex<double> second2 = BasicMathFunctionDefinition::relatedBesselFunctionSecondKind(label2,this->trigonometricCoefficient2(emissionPolarAngle),this->auxiliaryAngle2(emissionPolarAngle));
+    std::complex<double> spectralComponentY = zero3*(
+        this->getFieldParameter1()*second1*zero2+
+        this->getFieldParameter2()*zero1*second2
+    );
+    return spectralComponentY;
+}
+
+std::complex<double> BasicRadiationOfElectronInCounterpropagatingLaser::spectralComponentZ(int labelLeft, int labelRight, int label3, double emissionPolarAngle) {
+    double label1 = labelLeft-label3;
+    double label2 = labelRight+label3;
+    std::complex<double> zero1 = BasicMathFunctionDefinition::relatedBesselFunctionZeroKind(label1,this->trigonometricCoefficient1(emissionPolarAngle),this->auxiliaryAngle1(emissionPolarAngle));
+    std::complex<double> zero2 = BasicMathFunctionDefinition::relatedBesselFunctionZeroKind(label2,this->trigonometricCoefficient2(emissionPolarAngle),this->auxiliaryAngle2(emissionPolarAngle));
+    std::complex<double> zero3 = BasicMathFunctionDefinition::relatedBesselFunctionZeroKind(label3,this->trigonometricCoefficient3(emissionPolarAngle),0);
+    std::complex<double> first1 = BasicMathFunctionDefinition::relatedBesselFunctionFirstKind(label1,this->trigonometricCoefficient1(emissionPolarAngle),this->auxiliaryAngle1(emissionPolarAngle));
+    std::complex<double> first2 = BasicMathFunctionDefinition::relatedBesselFunctionFirstKind(label2,this->trigonometricCoefficient2(emissionPolarAngle),this->auxiliaryAngle2(emissionPolarAngle));
+    std::complex<double> first3 = BasicMathFunctionDefinition::relatedBesselFunctionFirstKind(label3,this->trigonometricCoefficient3(emissionPolarAngle),0);
+    std::complex<double> spectralComponentZ = (
+        zero1*zero2*(
+            (this->getInitialMomentumZ()/electronMass)*zero3-
+            ((electronMass*this->getFieldParameter1()*this->getFieldParameter2())/(this->getVelocityZPrime()*this->getEnergy()))*first3
+        )+
+        zero3*((this->getInitialMomentumX()*omega)/electronMass)*(
+            (this->getFieldParameter1()/this->getOmega1())*first1*zero2-
+            (this->getFieldParameter2()/this->getOmega2())*zero1*first2
+        )
+    );
+    return spectralComponentZ;
 }
 
 void BasicRadiationOfElectronInCounterpropagatingLaser::calculateDifferentialEmissionIntensity() {
-    std::vector<double> emissionPolarAngle = this->calculateEmissionPolarAngle(-10,-10);
-    std::cout << "emission polar angle: " << emissionPolarAngle[0] << std::endl;
-    //std::cout << "===========================================" << std::endl;
-    std::complex<double> emissionMatrixElementT = this->emissionMatrixElementT(0,0,emissionPolarAngle[0]);
-    std::cout << "emission matrix element T: " << emissionMatrixElementT << std::endl;
-    std::cout << "===========================================" << std::endl;
+    double differentialEmissionIntensity = 0;
+    double label1Limit = 0;
+    double label2Limit = 0;
+    double label3Limit = 0;
+    for(int label1 = 0;;label1++){
+        std::vector<double> trigonometricCoefficient1 = {};
+        for(double polarAngle=0;polarAngle<M_PI;polarAngle+=0.01){
+            trigonometricCoefficient1.push_back(this->trigonometricCoefficient1(polarAngle));
+        }
+        double maxTrigonometricCoefficient1 = *std::max_element(trigonometricCoefficient1.begin(),trigonometricCoefficient1.end());
+        if(std::cyl_bessel_i(label1,maxTrigonometricCoefficient1)<1e-100||std::isnan(std::cyl_bessel_i(label1,maxTrigonometricCoefficient1))){
+            label1Limit = label1;
+            break;
+        }
+    }
+    for(int label2 = 0;;label2++){
+        std::vector<double> trigonometricCoefficient2 = {};
+        for(double polarAngle=0;polarAngle<M_PI;polarAngle+=0.01){
+            trigonometricCoefficient2.push_back(this->trigonometricCoefficient2(polarAngle));
+        }
+        double maxTrigonometricCoefficient2 = *std::max_element(trigonometricCoefficient2.begin(),trigonometricCoefficient2.end());
+        if(std::cyl_bessel_i(label2,maxTrigonometricCoefficient2)<1e-100||std::isnan(std::cyl_bessel_i(label2,maxTrigonometricCoefficient2))){
+            label2Limit = label2;
+            break;
+        }
+    }
+    for(int label3=0;;label3++){
+        double maxTrigonometricCoefficient3 = this->trigonometricCoefficient3(M_PI/2);
+        if(std::cyl_bessel_i(label3,maxTrigonometricCoefficient3)<1e-100){
+            label3Limit = label3;
+            break;
+        }
+    }
+    double labelLeftLimit = label1Limit+label3Limit;
+    double labelRightLimit = label2Limit+label3Limit;
+    std::cout<<"labelLeftLimit: "<<labelLeftLimit<<std::endl;
+    std::cout<<"labelRightLimit: "<<labelRightLimit<<std::endl;
+    std::cout<<"label3Limit: "<<label3Limit<<std::endl;
+    long double time0 = std::chrono::duration_cast<std::chrono::nanoseconds>(std::chrono::system_clock::now().time_since_epoch()).count();
+    for(int labelLeft = -labelLeftLimit;labelLeft<=labelLeftLimit;labelLeft++){
+        for(int labelRight = -labelRightLimit;labelRight<=labelRightLimit;labelRight++){
+            for(int label3 = -label3Limit;label3<=label3Limit;label3++){
+                std::vector<double> emissionPolarAngle = this->calculateEmissionPolarAngle(labelLeft,labelRight);
+                //std::cout<<labelLeft<<","<<labelRight<<","<<label3<<std::endl;
+                for(int i=0;i<emissionPolarAngle.size();i++){
+                    std::complex<double> spectralComponentT = this->spectralComponentT(labelLeft,labelRight,label3,emissionPolarAngle[i]);
+                    std::complex<double> spectralComponentX = this->spectralComponentX(labelLeft,labelRight,label3,emissionPolarAngle[i]);
+                    std::complex<double> spectralComponentY = this->spectralComponentY(labelLeft,labelRight,label3,emissionPolarAngle[i]);
+                    std::complex<double> spectralComponentZ = this->spectralComponentZ(labelLeft,labelRight,label3,emissionPolarAngle[i]);
+                    std::complex<double> spectralComponent = spectralComponentT*spectralComponentT-spectralComponentX*spectralComponentX-spectralComponentY*spectralComponentY-spectralComponentZ*spectralComponentZ;
+                    differentialEmissionIntensity += spectralComponent.real()*std::abs(1/(this->getVelocityXPrime()*std::cos(this->emissionAzimuthalAngle)*(1/std::tan(emissionPolarAngle[i]))-this->getVelocityZPrime()));
+                }
+            }
+        }
+    }
+    long double time1 = std::chrono::duration_cast<std::chrono::nanoseconds>(std::chrono::system_clock::now().time_since_epoch()).count();
+    std::cout<<"Time: "<<time1-time0<<std::endl;
+    this->differentialEmissionIntensity = ((photonEnergy*electronMass*electronMass)/(2*M_PI*this->getEnergy()*this->getEnergy()))*differentialEmissionIntensity;
 }
 
 double BasicRadiationOfElectronInCounterpropagatingLaser::getPhotonEnergy() {
@@ -105,5 +222,5 @@ double BasicRadiationOfElectronInCounterpropagatingLaser::getEmissionRelativedto
 }
 
 BasicRadiationOfElectronInCounterpropagatingLaser::~BasicRadiationOfElectronInCounterpropagatingLaser() {
-    delete this->electronInCounterpropagatingLaser;
+    std::cout << "The object has been deleted" << std::endl;
 }
