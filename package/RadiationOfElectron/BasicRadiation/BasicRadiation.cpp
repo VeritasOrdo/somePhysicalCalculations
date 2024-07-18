@@ -149,7 +149,6 @@ std::complex<double> BasicRadiationOfElectronInCounterpropagatingLaser::spectral
 }
 
 void BasicRadiationOfElectronInCounterpropagatingLaser::calculateDifferentialEmissionIntensity() {
-    double differentialEmissionIntensity = 0;
     double label1Limit = 0;
     double label2Limit = 0;
     double label3Limit = 0;
@@ -188,25 +187,39 @@ void BasicRadiationOfElectronInCounterpropagatingLaser::calculateDifferentialEmi
     std::cout<<"labelRightLimit: "<<labelRightLimit<<std::endl;
     std::cout<<"label3Limit: "<<label3Limit<<std::endl;
     long double time0 = std::chrono::duration_cast<std::chrono::nanoseconds>(std::chrono::system_clock::now().time_since_epoch()).count();
+    double differentialEmissionIntensityRe = 0;
     for(int labelLeft = -labelLeftLimit;labelLeft<=labelLeftLimit;labelLeft++){
         for(int labelRight = -labelRightLimit;labelRight<=labelRightLimit;labelRight++){
-            for(int label3 = -label3Limit;label3<=label3Limit;label3++){
-                std::vector<double> emissionPolarAngle = this->calculateEmissionPolarAngle(labelLeft,labelRight);
-                //std::cout<<labelLeft<<","<<labelRight<<","<<label3<<std::endl;
-                for(int i=0;i<emissionPolarAngle.size();i++){
-                    std::complex<double> spectralComponentT = this->spectralComponentT(labelLeft,labelRight,label3,emissionPolarAngle[i]);
-                    std::complex<double> spectralComponentX = this->spectralComponentX(labelLeft,labelRight,label3,emissionPolarAngle[i]);
-                    std::complex<double> spectralComponentY = this->spectralComponentY(labelLeft,labelRight,label3,emissionPolarAngle[i]);
-                    std::complex<double> spectralComponentZ = this->spectralComponentZ(labelLeft,labelRight,label3,emissionPolarAngle[i]);
-                    std::complex<double> spectralComponent = spectralComponentT*spectralComponentT-spectralComponentX*spectralComponentX-spectralComponentY*spectralComponentY-spectralComponentZ*spectralComponentZ;
-                    differentialEmissionIntensity += spectralComponent.real()*std::abs(1/(this->getVelocityXPrime()*std::cos(this->emissionAzimuthalAngle)*(1/std::tan(emissionPolarAngle[i]))-this->getVelocityZPrime()));
+            std::vector<double> emissionPolarAngle = this->calculateEmissionPolarAngle(labelLeft,labelRight);
+            for(int emissionPolarAngleIndex=0;emissionPolarAngleIndex<emissionPolarAngle.size();emissionPolarAngleIndex++){
+                std::complex<double> spectralComponentT =0;
+                std::complex<double> spectralComponentX =0;
+                std::complex<double> spectralComponentY =0;
+                std::complex<double> spectralComponentZ =0;
+                for(int label3 = -label3Limit;label3<=label3Limit;label3++){
+                    //std::cout<<labelLeft<<","<<labelRight<<","<<label3<<std::endl;
+                    spectralComponentT += this->spectralComponentT(labelLeft,labelRight,label3,emissionPolarAngle[emissionPolarAngleIndex]);
+                    spectralComponentX += this->spectralComponentX(labelLeft,labelRight,label3,emissionPolarAngle[emissionPolarAngleIndex]);
+                    spectralComponentY += this->spectralComponentY(labelLeft,labelRight,label3,emissionPolarAngle[emissionPolarAngleIndex]);
+                    spectralComponentZ += this->spectralComponentZ(labelLeft,labelRight,label3,emissionPolarAngle[emissionPolarAngleIndex]);
+                }
+                double spectralComponent = std::abs(spectralComponentT)*std::abs(spectralComponentT)-std::abs(spectralComponentX)*std::abs(spectralComponentX)-std::abs(spectralComponentY)*std::abs(spectralComponentY)-std::abs(spectralComponentZ)*std::abs(spectralComponentZ);
+                differentialEmissionIntensityRe += spectralComponent*(1/(this->getVelocityXPrime()*std::cos(this->emissionAzimuthalAngle)*(1/std::tan(emissionPolarAngle[emissionPolarAngleIndex]))-this->getVelocityZPrime()));
+                std::cout<<"spectral component"<<spectralComponent<<std::endl;
+                if(spectralComponent>1){
+                    std::cout<<"spectral component"<<spectralComponent<<std::endl;
+                    std::cout<<"labelLeft: "<<labelLeft<<" labelRight: "<<labelRight<<std::endl;
                 }
             }
         }
     }
     long double time1 = std::chrono::duration_cast<std::chrono::nanoseconds>(std::chrono::system_clock::now().time_since_epoch()).count();
-    std::cout<<"Time: "<<time1-time0<<std::endl;
-    this->differentialEmissionIntensity = ((photonEnergy*electronMass*electronMass)/(2*M_PI*this->getEnergy()*this->getEnergy()))*differentialEmissionIntensity;
+    //print the time with min and sec
+    std::cout<<"differentialEmissionIntensityRe: "<<differentialEmissionIntensityRe<<std::endl;
+    std::cout<<"Time: "<<(time1-time0)/60000000000<<" min"<<std::endl;
+    this->differentialEmissionIntensity = (((double(1)/double(137))*photonEnergy*electronMass*electronMass)/(2*M_PI*this->getEnergy()*this->getEnergy()))*differentialEmissionIntensityRe;
+    //this->differentialEmissionIntensity = (((double(1)/double(137))*photonEnergy*electronMass*electronMass)/(2*M_PI*this->getEnergy()*this->getEnergy()));
+    std::cout<<this->differentialEmissionIntensity<<std::endl;
 }
 
 double BasicRadiationOfElectronInCounterpropagatingLaser::getPhotonEnergy() {
