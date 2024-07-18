@@ -1,6 +1,8 @@
 #include<cmath>
 #include<complex>
 #include<utility>
+#include<gsl/gsl_sf_bessel.h>
+#include<gsl/gsl_errno.h>
 #pragma once
 
 class BasicMathFunctionDefinition {

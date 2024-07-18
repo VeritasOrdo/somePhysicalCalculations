@@ -1,14 +1,24 @@
 #include "BasicMathFunctionDefinition.h"
-//#include <../gsl/include/gsl/gsl_sf_bessel.h>
 #include <cmath>
 #include <complex>
 #include <iostream> 
 
+void my_gsl_error_handler(const char * reason, const char * file, int line, int gsl_errno) {
+    //fprintf(stderr, "A GSL error occurred: %s\n", reason);
+    //fprintf(stderr, "Error code: %d, in file: %s, line: %d\n", gsl_errno, file, line);
+    // 根据错误类型决定是否终止程序
+    if (gsl_errno != GSL_EUNDRFLW) { // 如果不是下溢错误，终止程序
+        abort();
+    }
+    // 对于下溢错误，可以选择不终止程序
+}
+
 double BasicMathFunctionDefinition::BesselFunctionForIntegerOrder(int label,double argument) {
+    gsl_set_error_handler(&my_gsl_error_handler);
     if(label>=0||(label%2==0)) {
-        return std::cyl_bessel_i(std::abs(label),argument);
+        return gsl_sf_bessel_Jn(std::abs(label),argument);
     }else {
-        return -std::cyl_bessel_i(std::abs(label),argument);
+        return -gsl_sf_bessel_Jn(std::abs(label),argument);
     }
 }
 
