@@ -205,8 +205,8 @@ void BasicRadiationOfElectronInCounterpropagatingLaser::calculateDifferentialEmi
                 }
                 double spectralComponent = std::abs(spectralComponentT)*std::abs(spectralComponentT)-std::abs(spectralComponentX)*std::abs(spectralComponentX)-std::abs(spectralComponentY)*std::abs(spectralComponentY)-std::abs(spectralComponentZ)*std::abs(spectralComponentZ);
                 differentialEmissionIntensityRe += spectralComponent*(1/(this->getVelocityXPrime()*std::cos(this->emissionAzimuthalAngle)*(1/std::tan(emissionPolarAngle[emissionPolarAngleIndex]))-this->getVelocityZPrime()));
-                std::cout<<"spectral component"<<spectralComponent<<std::endl;
-                if(spectralComponent>1){
+                //std::cout<<"spectral component"<<spectralComponent<<std::endl;
+                if(std::abs(spectralComponent)>1){
                     std::cout<<"spectral component"<<spectralComponent<<std::endl;
                     std::cout<<"labelLeft: "<<labelLeft<<" labelRight: "<<labelRight<<std::endl;
                 }
@@ -218,7 +218,6 @@ void BasicRadiationOfElectronInCounterpropagatingLaser::calculateDifferentialEmi
     std::cout<<"differentialEmissionIntensityRe: "<<differentialEmissionIntensityRe<<std::endl;
     std::cout<<"Time: "<<(time1-time0)/60000000000<<" min"<<std::endl;
     this->differentialEmissionIntensity = (((double(1)/double(137))*photonEnergy*electronMass*electronMass)/(2*M_PI*this->getEnergy()*this->getEnergy()))*differentialEmissionIntensityRe;
-    //this->differentialEmissionIntensity = (((double(1)/double(137))*photonEnergy*electronMass*electronMass)/(2*M_PI*this->getEnergy()*this->getEnergy()));
     std::cout<<this->differentialEmissionIntensity<<std::endl;
 }
 
@@ -234,6 +233,50 @@ double BasicRadiationOfElectronInCounterpropagatingLaser::getEmissionRelativedto
     return this->differentialEmissionIntensity;
 }
 
+void BasicRadiationOfElectronInCounterpropagatingLaser::test() {
+    std::cout<<"Test:"<<std::endl;
+    std::cout<<"=================TEST===================="<<std::endl;
+    std::vector<double> emissionPolarAngle = this->calculateEmissionPolarAngle(2210,9);
+    std::cout<<"emissionPolarAngle: "<<emissionPolarAngle[0]<<std::endl;
+    std::cout<<"emissionPolarAngle: "<<emissionPolarAngle[1]<<std::endl;
+    double trigonometricCoefficient1 = this->trigonometricCoefficient1(emissionPolarAngle[0]);
+    double trigonometricCoefficient2 = this->trigonometricCoefficient2(emissionPolarAngle[0]);
+    double trigonometricCoefficient3 = this->trigonometricCoefficient3(emissionPolarAngle[0]);
+    double auxiliaryAngle1 = this->auxiliaryAngle1(emissionPolarAngle[0]);
+    double auxiliaryAngle2 = this->auxiliaryAngle2(emissionPolarAngle[0]);
+    //std::complex<double> spectralComponentT = 0;
+    //std::complex<double> spectralComponentX = 0;
+    //std::complex<double> spectralComponentY = 0;
+    //std::complex<double> spectralComponentZ = 0;
+    /*for(int label3 = -6;label3<=6;label3++){
+        //std::cout<<labelLeft<<","<<labelRight<<","<<label3<<std::endl;
+        spectralComponentT += this->spectralComponentT(2210,9,label3,emissionPolarAngle[0]);
+        spectralComponentX += this->spectralComponentX(2210,9,label3,emissionPolarAngle[0]);
+        spectralComponentY += this->spectralComponentY(2210,9,label3,emissionPolarAngle[0]);
+        spectralComponentZ += this->spectralComponentZ(2210,9,label3,emissionPolarAngle[0]);
+        std::cout<<"spectralComponentT"<<label3<<": "<<this->spectralComponentT(2210,9,label3,emissionPolarAngle[0])<<std::endl;
+        std::cout<<"spectralComponentX"<<label3<<": "<<this->spectralComponentT(2210,9,label3,emissionPolarAngle[0])<<std::endl;
+        std::cout<<"spectralComponentY"<<label3<<": "<<this->spectralComponentT(2210,9,label3,emissionPolarAngle[0])<<std::endl;
+        std::cout<<"spectralComponentZ"<<label3<<": "<<this->spectralComponentT(2210,9,label3,emissionPolarAngle[0])<<std::endl;
+    }*/
+    std::complex<double> spectralComponentT = this->spectralComponentT(2210,9,-6,emissionPolarAngle[0]);
+    std::complex<double> spectralComponentX = this->spectralComponentX(2210,9,-6,emissionPolarAngle[0]);
+    std::complex<double> spectralComponentY = this->spectralComponentY(2210,9,-6,emissionPolarAngle[0]);
+    std::complex<double> spectralComponentZ = this->spectralComponentZ(2210,9,-6,emissionPolarAngle[0]);
+    std::cout<<"spectralComponentT: "<<spectralComponentT<<std::endl;
+    //std::cout<<"spectralComponentX: "<<spectralComponentX<<std::endl;
+    //std::cout<<"spectralComponentY: "<<spectralComponentY<<std::endl;
+    //std::cout<<"spectralComponentZ: "<<spectralComponentZ<<std::endl;
+    std::complex<double> relatedBessel01 = BasicMathFunctionDefinition::relatedBesselFunctionZeroKind(2216,trigonometricCoefficient1,auxiliaryAngle1);
+    std::complex<double> relatedBessel02 = BasicMathFunctionDefinition::relatedBesselFunctionZeroKind(2216,trigonometricCoefficient2,auxiliaryAngle2);
+    std::complex<double> relatedBessel03 = BasicMathFunctionDefinition::relatedBesselFunctionZeroKind(2216,trigonometricCoefficient3,0);
+    std::cout<<"relatedBessel01: "<<relatedBessel01<<std::endl;
+    //std::cout<<"relatedBessel02: "<<relatedBessel02<<std::endl;
+    //std::cout<<"relatedBessel03: "<<relatedBessel03<<std::endl;
+    std::cout<<"=================TEST===================="<<std::endl;
+}
+
 BasicRadiationOfElectronInCounterpropagatingLaser::~BasicRadiationOfElectronInCounterpropagatingLaser() {
     std::cout << "The object has been deleted" << std::endl;
 }
+

@@ -33,6 +33,7 @@ class BasicRadiationOfElectronInCounterpropagatingLaser: private ElectronInCount
         double getPhotonEnergy();
         double getEmissionAzimuthalAngle();
         double getEmissionRelativedtoPhotonEnergyAndAzimuthalAngle();
+        void test();
         ~BasicRadiationOfElectronInCounterpropagatingLaser();
 };
 

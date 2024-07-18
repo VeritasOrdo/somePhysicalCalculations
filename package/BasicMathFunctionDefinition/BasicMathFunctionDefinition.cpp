@@ -1,13 +1,14 @@
 #include "BasicMathFunctionDefinition.h"
+//#include <../gsl/include/gsl/gsl_sf_bessel.h>
 #include <cmath>
 #include <complex>
 #include <iostream> 
 
-double BasicMathFunctionDefinition::BesselFunctionForIntegerOrder(int lable,double argument) {
-    if(lable>=0||(lable%2==0)) {
-        return std::cyl_bessel_j(std::abs(lable),argument);
+double BasicMathFunctionDefinition::BesselFunctionForIntegerOrder(int label,double argument) {
+    if(label>=0||(label%2==0)) {
+        return std::cyl_bessel_i(std::abs(label),argument);
     }else {
-        return -std::cyl_bessel_j(std::abs(lable),argument);
+        return -std::cyl_bessel_i(std::abs(label),argument);
     }
 }
 
@@ -17,7 +18,6 @@ std::complex<double> BasicMathFunctionDefinition::relatedBesselFunctionZeroKind(
     }else {
         return std::exp(std::complex<double>(0,lable*phase))*BasicMathFunctionDefinition::BesselFunctionForIntegerOrder(lable,argument);
     }
-
 }
 
 std::complex<double> BasicMathFunctionDefinition::relatedBesselFunctionFirstKind(int lable,double argument,double phase) {

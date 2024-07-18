@@ -20,9 +20,9 @@ int main(){
     double omega = 1.55;
     //ElectronInCounterpropagatingLaser electronInCounterpropagatingLaser(momentumZPrime,momentumXPrime,fieldParameter1,fieldParameter2,0);
     BasicRadiationOfElectronInCounterpropagatingLaser basicRadiationOfElectron(momentumZPrime,momentumXPrime,fieldParameter1,fieldParameter2,0,photonEnergy,PI/2);
+    //basicRadiationOfElectron.test();
     basicRadiationOfElectron.calculateDifferentialEmissionIntensity();
     std::cout << "differentialEmissionIntensity: " << basicRadiationOfElectron.getEmissionRelativedtoPhotonEnergyAndAzimuthalAngle() << std::endl;
-    std::cout << "===========================================" << std::endl;
     return 0;
 }
 
