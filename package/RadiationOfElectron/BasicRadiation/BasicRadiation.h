@@ -23,10 +23,7 @@ class BasicRadiationOfElectronInCounterpropagatingLaser: private ElectronInCount
         double trigonometricCoefficient3(double emissionPolarAngle);
         double auxiliaryAngle1(double emissionPolarAngle);
         double auxiliaryAngle2(double emissionPolarAngle);
-        std::complex<double> spectralComponentT(int labelLeft, int labelRight, int label3, double emissionPolarAngle);
-        std::complex<double> spectralComponentX(int labelLeft, int labelRight, int label3, double emissionPolarAngle);
-        std::complex<double> spectralComponentY(int labelLeft, int labelRight, int label3, double emissionPolarAngle);
-        std::complex<double> spectralComponentZ(int labelLeft, int labelRight, int label3, double emissionPolarAngle);
+        std::vector<std::complex<double>> SpectralComponent(int labelLeft, int labelRight, int label3, double emissionPolarAngle);
     public:
         BasicRadiationOfElectronInCounterpropagatingLaser(double momentumZPrime,double momentumXPrime,double fieldParameter1,double fieldParameter2,double properTime,double photonEnergy,double emissionAzimuthalAngle);
         void calculateDifferentialEmissionIntensity();

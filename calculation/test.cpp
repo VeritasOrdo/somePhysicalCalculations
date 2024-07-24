@@ -5,6 +5,7 @@
 #include<complex>
 #include<fstream>
 #include "../package/ElectronInCounterpropagatingLaser/ElectronInCounterpropagatingLaser.h"
+#include "../package/BasicMathFunctionDefinition/BasicMathFunctionDefinition.h"
 #include "../package/RadiationOfElectron/BasicRadiation/BasicRadiation.h"
 
 int main(){
