@@ -11,8 +11,8 @@
     }
 }*/
 
-std::complex<double> BasicMathFunctionDefinition::relatedBesselFunctionZeroKind(double bessel,int lable,double phase) {
-    return std::exp(std::complex<double>(0,lable*phase))*bessel;
+std::complex<double> BasicMathFunctionDefinition::relatedBesselFunctionZeroKind(double bessel,int label,double phase) {
+    return std::exp(std::complex<double>(0,label*phase))*bessel;
 }
 
 /*std::complex<double> BasicMathFunctionDefinition::relatedBesselFunctionFirstKind(int lable,double argument,double phase) {
@@ -22,8 +22,8 @@ std::complex<double> BasicMathFunctionDefinition::relatedBesselFunctionZeroKind(
     return std::exp(std::complex<double>(0,lable*phase))*std::complex<double>((lable/argument)*BasicMathFunctionDefinition::BesselFunctionForIntegerOrder(lable,argument)*std::cos(phase),-std::sin(phase)*((1/2)*(BasicMathFunctionDefinition::BesselFunctionForIntegerOrder(lable-1,argument)-BasicMathFunctionDefinition::BesselFunctionForIntegerOrder(lable+1,argument))));
 }*/
 
-std::complex<double> BasicMathFunctionDefinition::relatedBesselFunctionFirstKind(double bessel,double besselMinus,double besselPlus,int lable,double argument,double phase) {
-    return std::exp(std::complex<double>(0,lable*phase))*std::complex<double>((lable/argument)*bessel*std::cos(phase),-std::sin(phase)*((1/2)*(besselMinus-besselPlus)));
+std::complex<double> BasicMathFunctionDefinition::relatedBesselFunctionFirstKind(double bessel,double besselMinus,double besselPlus,int label,double argument,double phase) {
+    return std::exp(std::complex<double>(0,label*phase))*std::complex<double>((0.5)*(besselMinus+besselPlus)*std::cos(phase),-std::sin(phase)*((0.5)*(besselMinus-besselPlus)));
 }
 
 /*std::complex<double> BasicMathFunctionDefinition::relatedBesselFunctionSecondKind(int lable,double argument,double phase) {
@@ -35,5 +35,5 @@ std::complex<double> BasicMathFunctionDefinition::relatedBesselFunctionFirstKind
 
 std::complex<double> BasicMathFunctionDefinition::relatedBesselFunctionSecondKind(double bessel,double besselMinus,double besselPlus,int lable,double argument,double phase) {
     //std::cout<<std::exp(std::complex<double>(0,lable*phase))<<'\t'<<std::complex<double>((lable/argument)*bessel*std::sin(phase),std::cos(phase)*((1/2)*(besselMinus-besselPlus)))<<std::endl;
-    return std::exp(std::complex<double>(0,lable*phase))*std::complex<double>((lable/argument)*bessel*std::sin(phase),std::cos(phase)*((1/2)*(besselMinus-besselPlus)));
+    return std::exp(std::complex<double>(0,lable*phase))*std::complex<double>((0.5)*(besselMinus+besselPlus)*std::sin(phase),std::cos(phase)*((0.5)*(besselMinus-besselPlus)));
 }

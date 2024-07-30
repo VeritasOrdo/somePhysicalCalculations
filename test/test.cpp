@@ -9,7 +9,7 @@
 
 int main(){
     double electronMass = 511000;
-    double fieldParameter1 = 50;
+    double fieldParameter1 = 20;
     double fieldParameter2 = 0.3;
     double reducedMass = electronMass*std::sqrt(1+fieldParameter1*fieldParameter1+fieldParameter2*fieldParameter2);
     double energyPrime = 4.0*reducedMass;

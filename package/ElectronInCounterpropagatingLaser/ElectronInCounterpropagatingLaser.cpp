@@ -117,6 +117,7 @@ double ElectronInCounterpropagatingLaser::getInitialMomentumX() {
 }
 
 double ElectronInCounterpropagatingLaser::getInitialMomentumZ() {
+    //std::cout << "MomentumZ:<<" << (*this->electronLorentzMomentumPrime)[3] << std::endl;
     return (*this->electronLorentzMomentumPrime)[3];
 }
 
