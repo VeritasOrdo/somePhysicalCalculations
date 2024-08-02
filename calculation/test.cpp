@@ -30,7 +30,7 @@ int main(){
         BasicRadiationOfElectronInCounterpropagatingLaser basicRadiationOfElectron(momentumZPrime,momentumXPrime,fieldParameter1,fieldParameter2,0,photonEnergy,0);
         basicRadiationOfElectron.calculateDifferentialEmissionIntensity();
         //file << photonEnergy << "\t" << basicRadiationOfElectron.getEmissionRelativedtoPhotonEnergyAndAzimuthalAngle() << std::endl;
-        file << phonEnergyRate << "\t" << basicRadiationOfElectron.getEmissionRelativedtoPhotonEnergyAndAzimuthalAngle() << std::endl;
+        file << phonEnergyRate << "\t" << basicRadiationOfElectron.getDifferentialEmissionIntensity() << std::endl;
     }
     file.close();
     /*std::cout<<energyPrime<<std::endl;
