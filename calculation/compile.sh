@@ -1,6 +1,6 @@
 #!/bin/bash
 
 # Compile the source code
-g++ -o test test.cpp -L../package/RadiationOfElectron/BasicRadiation -lBasicRadiation -L../package/ElectronInCounterpropagatingLaser -lElectronInCounterpropagatingLaser -L../package/BasicMathFunctionDefinition -lBasicMathFunctionDefinition -L../package/LorentzVector -lLorentzVector -L../package/gsl/lib -lgsl -lgslcblas -fopenmp -std=c++17
+g++ -o test test.cpp -L../package/RadiationOfElectron/RadiationWithSpinAndPolarzation -lRadiationWithSpinAndPolarzation -L../package/Dimension3Vector -lDimension3Vector  -L../package/RadiationOfElectron/BasicRadiation -lBasicRadiation -L../package/ElectronInCounterpropagatingLaser -lElectronInCounterpropagatingLaser -L../package/BasicMathFunctionDefinition -lBasicMathFunctionDefinition -L../package/LorentzVector -lLorentzVector -L../package/gsl/lib -lgsl -lgslcblas -fopenmp -std=c++17
 ./test
 

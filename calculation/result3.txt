@@ -1,0 +1,3 @@
+spinIncident: 0.5	spinEmission: 0.5
+polarizationAlpha: Pi/4	polarizationBeta: 0
+differentialEmissionIntensity: 0.000918167

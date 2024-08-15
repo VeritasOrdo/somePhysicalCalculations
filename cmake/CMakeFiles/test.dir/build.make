@@ -92,10 +92,16 @@ test_EXTERNAL_OBJECTS =
 
 test: CMakeFiles/test.dir/calculation/test.cpp.o
 test: CMakeFiles/test.dir/build.make
+test: ../package/RadiationOfElectron/RadiationWithSpinAndPolarzation/libRadiationWithSpinAndPolarzation.a
 test: ../package/RadiationOfElectron/BasicRadiation/libBasicRadiation.a
 test: ../package/ElectronInCounterpropagatingLaser/libElectronInCounterpropagatingLaser.a
 test: ../package/LorentzVector/libLorentzVector.a
+test: ../package/Dimension3Vector/libDimension3Vector.a
 test: ../package/BasicMathFunctionDefinition/libBasicMathFunctionDefinition.a
+test: ../../gsl/lib/libgsl.a
+test: ../../gsl/lib/libgslcblas.a
+test: /usr/lib/gcc/x86_64-linux-gnu/8/libgomp.so
+test: /usr/lib/x86_64-linux-gnu/libpthread.so
 test: CMakeFiles/test.dir/link.txt
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --bold --progress-dir=/home/Veritas_Ordo/Physics/cmake/CMakeFiles --progress-num=$(CMAKE_PROGRESS_2) "Linking CXX executable test"
 	$(CMAKE_COMMAND) -E cmake_link_script CMakeFiles/test.dir/link.txt --verbose=$(VERBOSE)

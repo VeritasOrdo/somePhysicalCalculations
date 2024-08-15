@@ -21,7 +21,7 @@ void my_gsl_error_handler(const char * reason, const char * file, int line, int 
 
 double myBesselFunction(int label,double argument) {
     gsl_set_error_handler(&my_gsl_error_handler);
-    if(std::abs(argument)<1000){
+    if(std::abs(argument)<1000&&std::abs(label)<1000){
         return gsl_sf_bessel_Jn(label,argument);
     }
     if(label>=0||((label%2)==0)) {
@@ -48,11 +48,6 @@ void BasicRadiationOfElectronInCounterpropagatingLaser::setDifferentialEmissionI
 std::vector<double> BasicRadiationOfElectronInCounterpropagatingLaser::calculateEmissionPolarAngle(int labelLeft, int labelRight) {
     std::vector<double> emissionPolarAngle={};
     double rho = (1/(this->getEnergy()*energyRatio))*(labelLeft*this->getOmega1()+labelRight*this->getOmega2());
-    //std::cout<<"Energy: "<<this->getEnergy()<<std::endl;
-    //std::cout<<"EnergyPrime: "<<this->getEnergyPrime()<<std::endl;
-    //std::cout<<"energyRatio: "<<energyRatio<<"energy: "<<this->getEnergy()<<"omega1: "<<this->getOmega1()<<"omega2: "<<this->getOmega2()<<std::endl;
-    //std::cout<<"labelLeft: "<<labelLeft<<" labelRight: "<<labelRight<<std::endl;
-    //std::cout<<"rho: "<<rho<<std::endl;
     double delta = this->getVelocityZPrime()*this->getVelocityZPrime()+this->getVelocityXPrime()*this->getVelocityXPrime()*std::cos(this->emissionAzimuthalAngle)*std::cos(this->emissionAzimuthalAngle)-(1-rho)*(1-rho);
     if (delta<0||(1-rho)/this->getVelocityZPrime()>1){
         return {};
@@ -174,6 +169,7 @@ std::vector<std::complex<double>> BasicRadiationOfElectronInCounterpropagatingLa
     double bessel1Minus = myBesselFunction(label1-1,trigonometricCoefficient1);
     double bessel2Minus = myBesselFunction(label2-1,trigonometricCoefficient2);
     double bessel3Minus = myBesselFunction(label3-1,trigonometricCoefficient3);
+    //std::cout<<bessel1<<'\t'<<bessel2<<'\t'<<bessel3<<std::endl;
     std::complex<double> zero1 = BasicMathFunctionDefinition::relatedBesselFunctionZeroKind(bessel1,label1,auxiliaryAngle1);
     std::complex<double> zero2 = BasicMathFunctionDefinition::relatedBesselFunctionZeroKind(bessel2,label2,auxiliaryAngle2);
     std::complex<double> zero3 = BasicMathFunctionDefinition::relatedBesselFunctionZeroKind(bessel3,label3,0);
@@ -217,21 +213,22 @@ std::vector<std::complex<double>> BasicRadiationOfElectronInCounterpropagatingLa
 }
 
 void BasicRadiationOfElectronInCounterpropagatingLaser::calculateDifferentialEmissionIntensity() {
+    std::cout<<"this is the function in BasicRadiationOfElectronInCounterpropagatingLaser"<<std::endl;
     std::vector<int> labelLimits = this->calculateLabelLimits();
     int labelLeftLimit = labelLimits[0]+labelLimits[2];
     int labelRightLimit = labelLimits[1]+labelLimits[2];
     int label3Limit = labelLimits[2];
     //labelLeftLimit = 20000;
-    //labelRightLimit = 20;
-    //label3Limit = 10;
+    //labelRightLimit = 30;
+    label3Limit = 10;
     std::cout<<"labelLeftLimit: "<<labelLeftLimit<<std::endl;
     std::cout<<"labelRightLimit: "<<labelRightLimit<<std::endl;
     std::cout<<"label3Limit: "<<label3Limit<<std::endl;
     long double time0 = std::chrono::duration_cast<std::chrono::nanoseconds>(std::chrono::system_clock::now().time_since_epoch()).count();
     double sumOfSpectralComponentFour = 0;
     double sumOfSpectralComponentTime = 0;
-    std::fstream file;
-    //file.open("spectralComponent.txt",std::ios::out);
+    //std::fstream file;
+    //file.open("spectralComponent1.txt",std::ios::out);
     #pragma omp parallel for schedule(dynamic) reduction(+:sumOfSpectralComponentFour,sumOfSpectralComponentTime)
     for(int labelLeft = 0;labelLeft<=labelLeftLimit;labelLeft++){
         if(labelLeft%100==0){
@@ -246,8 +243,9 @@ void BasicRadiationOfElectronInCounterpropagatingLaser::calculateDifferentialEmi
                 std::complex<double> spectralComponentY =0;
                 std::complex<double> spectralComponentZ =0;
                 for(int label3 = -label3Limit;label3<=label3Limit;label3++){
-                    //std::cout<<labelLeft<<","<<labelRight<<","<<label3<<std::endl;
+                    //file<<labelLeft<<","<<labelRight<<","<<label3<<std::endl;
                     std::vector<std::complex<double>> spectralComponent = this->SpectralComponent(labelLeft,labelRight,label3,emissionPolarAngle[emissionPolarAngleIndex]);
+                    //file<<spectralComponent[0]<<","<<spectralComponent[1]<<","<<spectralComponent[2]<<","<<spectralComponent[3]<<spectralComponent[4]<<std::endl;
                     spectralComponentT += spectralComponent[0];
                     spectralComponentX += spectralComponent[1];
                     spectralComponentY += spectralComponent[2];
@@ -259,11 +257,6 @@ void BasicRadiationOfElectronInCounterpropagatingLaser::calculateDifferentialEmi
                 //std::cout<<"SL: "<<labelLeft<<'\t'<<" SR: "<<labelRight<<'\t'<<"spectralComponentFour: "<<spectralComponentFour<<'\t'<<"spectralComponentTime: "<<spectralComponentTime<<std::endl;
                 sumOfSpectralComponentFour += spectralComponentFour*std::abs(1/(this->getVelocityXPrime()*std::cos(this->emissionAzimuthalAngle)*(1/std::tan(emissionPolarAngle[emissionPolarAngleIndex]))-this->getVelocityZPrime()));
                 sumOfSpectralComponentTime += spectralComponentTime*std::abs(1/(this->getVelocityXPrime()*std::cos(this->emissionAzimuthalAngle)*(1/std::tan(emissionPolarAngle[emissionPolarAngleIndex]))-this->getVelocityZPrime()));
-                //std::cout<<"spectral component"<<spectralComponent<<std::endl;
-                /*if(std::abs(sumOfSpectralComponentFour)>1){
-                    std::cout<<"spectral component"<<sumOfSpectralComponentFour<<std::endl;
-                    std::cout<<"labelLeft: "<<labelLeft<<" labelRight: "<<labelRight<<std::endl;
-                }*/
             }
         }
     }

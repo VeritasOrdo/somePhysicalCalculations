@@ -27,7 +27,7 @@ class BasicRadiationOfElectronInCounterpropagatingLaser: public ElectronInCounte
     public:
         void setDifferentialEmissionIntensity(double differentialEmissionIntensity);
         BasicRadiationOfElectronInCounterpropagatingLaser(double momentumZPrime,double momentumXPrime,double fieldParameter1,double fieldParameter2,double properTime,double photonEnergy,double emissionAzimuthalAngle);
-        void calculateDifferentialEmissionIntensity();
+        virtual void calculateDifferentialEmissionIntensity();
         double getPhotonEnergy();
         double getEmissionAzimuthalAngle();
         double getDifferentialEmissionIntensity();
