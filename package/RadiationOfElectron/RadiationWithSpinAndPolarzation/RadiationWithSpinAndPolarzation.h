@@ -16,7 +16,6 @@ class RadiationWithSpinAndPolarzation : public BasicRadiationOfElectronInCounter
         Dimension3Vector<double> emissionOrientationAxis;
         Dimension3Vector<double> combinedIncidentOrientationAxis;
         Dimension3Vector<double> combinedEmissionOrientationAxis;
-        std::vector<double> stokesParameterNormalized;
     public:
         RadiationWithSpinAndPolarzation(double momentumZPrime,double momentumXPrime,double fieldParameter1,double fieldParameter2,double properTime,double photonEnergy,double emissionAzimuthalAngle,double spinIncident,double spinEmission,double polarizationAlpha,double polarzationBeta,double axisOfIncidentAzimuthalAngleOfElectronSpin,double axisOfIncidentPolarAngleOfElectronSpin,double axisOfEmissionAzimuthalAngleOfElectronSpin,double axisOfEmissionPolarAngleOfElectronSpin);
         //the value of the spin are 0.5 or -0.5

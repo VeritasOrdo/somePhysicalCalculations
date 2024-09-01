@@ -9,6 +9,7 @@
 #include "../package/BasicMathFunctionDefinition/BasicMathFunctionDefinition.h"
 //#include "../package/RadiationOfElectron/BasicRadiation/BasicRadiation.h"
 #include "../package/RadiationOfElectron/RadiationWithSpinAndPolarzation/RadiationWithSpinAndPolarzation.h"
+#define PI 3.141592653589793238462643383279502884197169399375105820974944592307816406286
 
 /*int main(){
     double electronMass = 511000;
@@ -109,20 +110,21 @@ int main(){
     double energyPrime = 30000000000.0;
     double momentumXPrime = 0;
     double momentumZPrime = std::sqrt(energyPrime*energyPrime-reducedMass*reducedMass-momentumXPrime*momentumXPrime);
-    double PI = 3.14159265358979323846;
     double omega = 1.55;
-    double spinIncidient = 0.5;
-    double spinEmission = -0.5;
+    double spinIncidient = -0.5;
+    double spinEmission = 0.5;
     double polarizationAlpha = 0;
     double polarizationBeta = 0;
     double axisOfIncidentPolarAngleOfElectronSpin = 0;
     double axisOfIncidentAzimuthalAngleOfElectronSpin = 0;
-    double axisOfEmissionPolarAngleOfElectronSpin = 0;
-    double axisOfEmissionAzimuthalAngleOfElectronSpin = 0;
+    double axisOfEmissionPolarAngleOfElectronSpin = PI/2;
+    double axisOfEmissionAzimuthalAngleOfElectronSpin = PI/2;
     double azimuthalAngleOfEmission = 0;
-    double photonEnergy = 14.0*1000000000.0;
+    double photonEnergy = 2.0*1000000000.0;
     RadiationWithSpinAndPolarzation radiationWithSpinAndPolarzation(momentumZPrime,momentumXPrime,fieldParameter1,fieldParameter2,0,photonEnergy,azimuthalAngleOfEmission,spinIncidient,spinEmission,polarizationAlpha,polarizationBeta,axisOfIncidentAzimuthalAngleOfElectronSpin,axisOfIncidentPolarAngleOfElectronSpin,axisOfEmissionAzimuthalAngleOfElectronSpin,axisOfEmissionPolarAngleOfElectronSpin);
     radiationWithSpinAndPolarzation.calculateDifferentialEmissionIntensity();
     std::cout << "differentialEmissionIntensity: " << 2*M_PI*radiationWithSpinAndPolarzation.getDifferentialEmissionIntensity() << std::endl;
+    std::cout << "cosPI/2: " << std::cos(M_PI/2) << std::endl;
+    std::cout << "cosPI/2_2: " << std::cos(PI/2) << std::endl;
     return 0;
 }

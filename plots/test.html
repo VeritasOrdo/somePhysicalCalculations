@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+    <!--a 3D plot draw by echarts-->
+    <div id="main" style="width: 600px;height:600px;"></div>
+    <!--set the div to center-->
+    <style>
+        #main {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+        }
+    </style>
+    <script src="https://unpkg.com/echarts/dist/echarts.min.js"></script>
+    <script src="https://unpkg.com/echarts-gl/dist/echarts-gl.min.js"></script>
+    <!--file reader package-->
+    <script src="https://unpkg.com/file-reader/dist/file-reader.min.js"></script>
+    <script>
+        //3D curve
+        var dom = document.getElementById("main");
+        var myChart = echarts.init(dom);
+        var app = {};
+        option = null;
+        app.title = '3D curve';
+        var data = [];
+
+        /*//read the data in "../NumericalSolutions/mainFunction/250mV.bin" and write in the data
+        var reader = new FileReader();
+        reader.readAsArrayBuffer(new Blob(["../NumericalSolutions/mainFunction/250mV.bin"]));
+        reader.onload = function (e) {
+            var arrayBuffer = reader.result;
+            var dataView = new DataView(arrayBuffer);
+            var data = [];
+            for (var i = 0; i < dataView.byteLength / 4; i++) {
+                data.push([
+                    dataView.getFloat32(i * 4, true),
+                    dataView.getFloat32(i * 4 + 4, true),
+                    dataView.getFloat32(i * 4 + 8, true)
+                ]);
+            }
+        };
+        console.log(data);*/
+
+        for (var i = 0; i < 100; i++) {
+            var t = i / 100 * 360;
+            var r = 5;
+            var z = 5 * Math.sin(t);
+            var x = r * Math.sin(t);
+            var y = r * Math.cos(t);
+            data.push([x, y, z]);
+        }
+
+        option = {
+            tooltip: {},
+            backgroundColor: '#fff',
+            xAxis3D: {
+                type: 'value'
+            },
+            yAxis3D: {
+                type: 'value'
+            },
+            zAxis3D: {
+                type: 'value'
+            },
+            grid3D: {
+                viewControl: {
+                    // projection: 'orthographic'
+                },
+                boxWidth: 80,
+                boxDepth: 80,
+                boxHeight: 80,
+                axisLine: {
+                    lineStyle: {
+                        color: '#000'
+                    }
+                },
+                axisPointer: {
+                    lineStyle: {
+                        color: '#000'
+                    }
+                },
+                light: {
+                    main: {
+                        intensity: 1.2,
+                        shadow: true
+                    },
+                    ambient: {
+                        intensity: 0.3
+                    }
+                }
+            },
+            series: [{
+                type: 'line3D',
+                data: data,
+                lineStyle: {
+                    width: 4
+                }
+            }]
+        };
+
+        if (option && typeof option === "object") {
+            myChart.setOption(option, true);
+        }
+
+    </script>
+</body>
+</html>
