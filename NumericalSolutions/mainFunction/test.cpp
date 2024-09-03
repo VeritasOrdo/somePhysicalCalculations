@@ -95,7 +95,7 @@ int main(){
     std::vector<double> energy = numericalSolutionOfMoleculeInCounterpropagatingLaser.getEnergy();
     std::vector<Dimension3Vector<double>> velocity = numericalSolutionOfMoleculeInCounterpropagatingLaser.getVelocity();
     //file open by bin
-    std::ofstream file("250mV.txt",std::ios::binary);
+    std::ofstream file("250mV.bin",std::ios::binary);
     //write data to file
     //time start
     auto timeFileStart = std::chrono::high_resolution_clock::now();
@@ -116,5 +116,3 @@ int main(){
     file.close();
     return 0;
 }
-
-

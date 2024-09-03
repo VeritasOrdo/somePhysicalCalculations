@@ -19,8 +19,6 @@
     </style>
     <script src="https://unpkg.com/echarts/dist/echarts.min.js"></script>
     <script src="https://unpkg.com/echarts-gl/dist/echarts-gl.min.js"></script>
-    <!--file reader package-->
-    <script src="https://unpkg.com/file-reader/dist/file-reader.min.js"></script>
     <script>
         //3D curve
         var dom = document.getElementById("main");
@@ -30,31 +28,36 @@
         app.title = '3D curve';
         var data = [];
 
-        /*//read the data in "../NumericalSolutions/mainFunction/250mV.bin" and write in the data
-        var reader = new FileReader();
-        reader.readAsArrayBuffer(new Blob(["../NumericalSolutions/mainFunction/250mV.bin"]));
-        reader.onload = function (e) {
-            var arrayBuffer = reader.result;
-            var dataView = new DataView(arrayBuffer);
-            var data = [];
-            for (var i = 0; i < dataView.byteLength / 4; i++) {
-                data.push([
-                    dataView.getFloat32(i * 4, true),
-                    dataView.getFloat32(i * 4 + 4, true),
-                    dataView.getFloat32(i * 4 + 8, true)
-                ]);
-            }
-        };
-        console.log(data);*/
+        fetch('http://127.0.0.1:5501/data/250mV.bin')
+                .then(response => {
+                    if (!response.ok) {
+                        throw new Error('Network response was not ok');
+                    }
+                    return response.arrayBuffer();
+                })
+                .then(buffer => {
+                    var dataView = new DataView(buffer);
+                    console.log(buffer.byteLength);
+                    for (var i = 0; i < buffer.byteLength / (8*3); i++) {
+                        data.push([
+                            dataView.getFloat64(i * 8 * 3, true),
+                            dataView.getFloat64(i * 8 * 3 + 8, true),
+                            dataView.getFloat64(i * 8 * 3 + 16, true)
+                        ]);
+                        //console.log(data[i]);
+                    }
+                    console.log(data);
+                    myChart.setOption({
+                        series: [{
+                            data: data
+                        }]
+                    });
+                })
+                .catch(error => {
+                    console.error('There has been a problem with your fetch operation:', error);
+                });
 
-        for (var i = 0; i < 100; i++) {
-            var t = i / 100 * 360;
-            var r = 5;
-            var z = 5 * Math.sin(t);
-            var x = r * Math.sin(t);
-            var y = r * Math.cos(t);
-            data.push([x, y, z]);
-        }
+        console.log(data);
 
         option = {
             tooltip: {},
@@ -66,7 +69,8 @@
                 type: 'value'
             },
             zAxis3D: {
-                type: 'value'
+                type: 'value',
+                scale: true
             },
             grid3D: {
                 viewControl: {
@@ -99,7 +103,7 @@
                 type: 'line3D',
                 data: data,
                 lineStyle: {
-                    width: 4
+                    width: 1
                 }
             }]
         };
