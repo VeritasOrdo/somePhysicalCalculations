@@ -85,19 +85,19 @@ std::vector<int> BasicRadiationOfElectronInCounterpropagatingLaser::calculateLab
     std::cout<<"z3Max: "<<trigonometricCoefficient3Max<<std::endl;
     long double timej0 = std::chrono::duration_cast<std::chrono::nanoseconds>(std::chrono::system_clock::now().time_since_epoch()).count();
     for(int i = 0;;i++){
-        if(std::abs(myBesselFunction(i,trigonometricCoefficient1Max))<1e-40){
+        if(std::abs(myBesselFunction(i,trigonometricCoefficient1Max))<1e-25){
             label1Limit = i;
             break;
         }
     }
     for(int i = 0;;i++){
-        if(std::abs(myBesselFunction(i,trigonometricCoefficient2Max))<1e-40){
+        if(std::abs(myBesselFunction(i,trigonometricCoefficient2Max))<1e-25){
             label2Limit = i;
             break;
         }
     }
     for(int i = 0;;i++){
-        if(std::abs(myBesselFunction(i,trigonometricCoefficient3Max))<1e-40){
+        if(std::abs(myBesselFunction(i,trigonometricCoefficient3Max))<1e-25){
             label3Limit = i;
             break;
         }

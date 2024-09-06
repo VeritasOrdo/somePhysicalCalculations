@@ -4,6 +4,7 @@
 #include<nlohmann/json.hpp>
 #include "../package/ElectronInCounterpropagatingLaser/ElectronInCounterpropagatingLaser.h"
 #include "../package/BasicMathFunctionDefinition/BasicMathFunctionDefinition.h"
+#include "../package/RadiationOfElectron/BasicRadiation/BasicRadiation.h"
 #include "../package/RadiationOfElectron/RadiationWithSpinAndPolarzation/RadiationWithSpinAndPolarzation.h"
 
 using json = nlohmann::json;
@@ -35,6 +36,9 @@ int main(){
     double begin = parameter["plot"]["begin"];
     double end = parameter["plot"]["end"];
     double step = (end-begin)/(double(parameter["plot"]["points"]));
+    bool useIncidentSpin = parameter["useIncidentSpin"];
+    bool useEmissionSpin = parameter["useEmissionSpin"];
+    bool usePolarization = parameter["usePolarization"];
     std::string fileName = parameter["outputFile"];
     //time start
     auto totalTimeBegin = std::chrono::system_clock::now();
@@ -45,9 +49,54 @@ int main(){
             file << photonEnergy << "\t" << 0 << std::endl;
             continue;
         }
-        RadiationWithSpinAndPolarzation radiationWithSpinAndPolarzation(momentumZPrime,momentumXPrime,fieldParameter1,fieldParameter2,0,photonEnergy,azimuthalAngleOfEmission,spinIncidient,spinEmission,polarizationAlpha,polarizationBeta,axisOfIncidentAzimuthalAngleOfElectronSpin,axisOfIncidentPolarAngleOfElectronSpin,axisOfEmissionAzimuthalAngleOfElectronSpin,axisOfEmissionPolarAngleOfElectronSpin);
-        radiationWithSpinAndPolarzation.calculateDifferentialEmissionIntensity();
-        file<<photonEnergy<<"\t"<<2*M_PI*radiationWithSpinAndPolarzation.getDifferentialEmissionIntensity()<<std::endl;
+        if((!useIncidentSpin)&&(!useEmissionSpin)&&(!usePolarization)){
+            BasicRadiationOfElectronInCounterpropagatingLaser radiationOfElectron(momentumZPrime,momentumXPrime,fieldParameter1,fieldParameter2,0,photonEnergy,azimuthalAngleOfEmission);
+            radiationOfElectron.calculateDifferentialEmissionIntensity();
+            file<<photonEnergy<<"\t"<<2*M_PI*radiationOfElectron.getDifferentialEmissionIntensity()<<std::endl;
+            continue;
+        }
+        if(useIncidentSpin&&useEmissionSpin&&(!usePolarization)){
+            RadiationWithSpinAndPolarzation radiationWithSpinAndPolarzation1(momentumZPrime,momentumXPrime,fieldParameter1,fieldParameter2,0,photonEnergy,azimuthalAngleOfEmission,spinIncidient,spinEmission,0,0,axisOfIncidentAzimuthalAngleOfElectronSpin,axisOfIncidentPolarAngleOfElectronSpin,axisOfEmissionAzimuthalAngleOfElectronSpin,axisOfEmissionPolarAngleOfElectronSpin);
+            RadiationWithSpinAndPolarzation radiationWithSpinAndPolarzation2(momentumZPrime,momentumXPrime,fieldParameter1,fieldParameter2,0,photonEnergy,azimuthalAngleOfEmission,spinIncidient,spinEmission,M_PI/2,0,axisOfIncidentAzimuthalAngleOfElectronSpin,axisOfIncidentPolarAngleOfElectronSpin,axisOfEmissionAzimuthalAngleOfElectronSpin,axisOfEmissionPolarAngleOfElectronSpin);
+            radiationWithSpinAndPolarzation1.calculateDifferentialEmissionIntensity();
+            radiationWithSpinAndPolarzation2.calculateDifferentialEmissionIntensity();
+            file<<photonEnergy<<"\t"<<2*M_PI*(radiationWithSpinAndPolarzation1.getDifferentialEmissionIntensity()+radiationWithSpinAndPolarzation2.getDifferentialEmissionIntensity())<<std::endl;
+            continue;
+        }
+        if((!useIncidentSpin)&&useEmissionSpin&&usePolarization){
+            RadiationWithSpinAndPolarzation radiationWithSpinAndPolarzation1(momentumZPrime,momentumXPrime,fieldParameter1,fieldParameter2,0,photonEnergy,azimuthalAngleOfEmission,0.5,spinEmission,polarizationAlpha,polarizationBeta,axisOfIncidentAzimuthalAngleOfElectronSpin,axisOfIncidentPolarAngleOfElectronSpin,axisOfEmissionAzimuthalAngleOfElectronSpin,axisOfEmissionPolarAngleOfElectronSpin);
+            RadiationWithSpinAndPolarzation radiationWithSpinAndPolarzation2(momentumZPrime,momentumXPrime,fieldParameter1,fieldParameter2,0,photonEnergy,azimuthalAngleOfEmission,-0.5,spinEmission,polarizationAlpha,polarizationBeta,axisOfIncidentAzimuthalAngleOfElectronSpin,axisOfIncidentPolarAngleOfElectronSpin,axisOfEmissionAzimuthalAngleOfElectronSpin,axisOfEmissionPolarAngleOfElectronSpin);
+            radiationWithSpinAndPolarzation1.calculateDifferentialEmissionIntensity();
+            radiationWithSpinAndPolarzation2.calculateDifferentialEmissionIntensity();
+            file<<photonEnergy<<"\t"<<M_PI*(radiationWithSpinAndPolarzation1.getDifferentialEmissionIntensity()+radiationWithSpinAndPolarzation2.getDifferentialEmissionIntensity())<<std::endl;
+            continue;
+        }
+        if(useIncidentSpin&&(!useEmissionSpin)&&usePolarization){
+            RadiationWithSpinAndPolarzation radiationWithSpinAndPolarzation1(momentumZPrime,momentumXPrime,fieldParameter1,fieldParameter2,0,photonEnergy,azimuthalAngleOfEmission,spinIncidient,0.5,polarizationAlpha,polarizationBeta,axisOfIncidentAzimuthalAngleOfElectronSpin,axisOfIncidentPolarAngleOfElectronSpin,axisOfEmissionAzimuthalAngleOfElectronSpin,axisOfEmissionPolarAngleOfElectronSpin);
+            RadiationWithSpinAndPolarzation radiationWithSpinAndPolarzation2(momentumZPrime,momentumXPrime,fieldParameter1,fieldParameter2,0,photonEnergy,azimuthalAngleOfEmission,spinIncidient,-0.5,polarizationAlpha,polarizationBeta,axisOfIncidentAzimuthalAngleOfElectronSpin,axisOfIncidentPolarAngleOfElectronSpin,axisOfEmissionAzimuthalAngleOfElectronSpin,axisOfEmissionPolarAngleOfElectronSpin);
+            radiationWithSpinAndPolarzation1.calculateDifferentialEmissionIntensity();
+            radiationWithSpinAndPolarzation2.calculateDifferentialEmissionIntensity();
+            file<<photonEnergy<<"\t"<<2*M_PI*(radiationWithSpinAndPolarzation1.getDifferentialEmissionIntensity()+radiationWithSpinAndPolarzation2.getDifferentialEmissionIntensity())<<std::endl;
+            continue;
+        }
+        if((!useIncidentSpin)&&(!useEmissionSpin)&&usePolarization){
+            RadiationWithSpinAndPolarzation radiationWithSpinAndPolarzation1(momentumZPrime,momentumXPrime,fieldParameter1,fieldParameter2,0,photonEnergy,azimuthalAngleOfEmission,0.5,0.5,polarizationAlpha,polarizationBeta,axisOfIncidentAzimuthalAngleOfElectronSpin,axisOfIncidentPolarAngleOfElectronSpin,axisOfEmissionAzimuthalAngleOfElectronSpin,axisOfEmissionPolarAngleOfElectronSpin);
+            RadiationWithSpinAndPolarzation radiationWithSpinAndPolarzation2(momentumZPrime,momentumXPrime,fieldParameter1,fieldParameter2,0,photonEnergy,azimuthalAngleOfEmission,0.5,-0.5,polarizationAlpha+M_PI/2,polarizationBeta,axisOfIncidentAzimuthalAngleOfElectronSpin,axisOfIncidentPolarAngleOfElectronSpin,axisOfEmissionAzimuthalAngleOfElectronSpin,axisOfEmissionPolarAngleOfElectronSpin);
+            RadiationWithSpinAndPolarzation radiationWithSpinAndPolarzation3(momentumZPrime,momentumXPrime,fieldParameter1,fieldParameter2,0,photonEnergy,azimuthalAngleOfEmission,-0.5,0.5,polarizationAlpha,polarizationBeta+M_PI/2,axisOfIncidentAzimuthalAngleOfElectronSpin,axisOfIncidentPolarAngleOfElectronSpin,axisOfEmissionAzimuthalAngleOfElectronSpin,axisOfEmissionPolarAngleOfElectronSpin);
+            RadiationWithSpinAndPolarzation radiationWithSpinAndPolarzation4(momentumZPrime,momentumXPrime,fieldParameter1,fieldParameter2,0,photonEnergy,azimuthalAngleOfEmission,-0.5,-0.5,polarizationAlpha+M_PI/2,polarizationBeta+M_PI/2,axisOfIncidentAzimuthalAngleOfElectronSpin,axisOfIncidentPolarAngleOfElectronSpin,axisOfEmissionAzimuthalAngleOfElectronSpin,axisOfEmissionPolarAngleOfElectronSpin);
+            radiationWithSpinAndPolarzation1.calculateDifferentialEmissionIntensity();
+            radiationWithSpinAndPolarzation2.calculateDifferentialEmissionIntensity();
+            radiationWithSpinAndPolarzation3.calculateDifferentialEmissionIntensity();
+            radiationWithSpinAndPolarzation4.calculateDifferentialEmissionIntensity();
+            file<<photonEnergy<<"\t"<<M_PI*(radiationWithSpinAndPolarzation1.getDifferentialEmissionIntensity()+radiationWithSpinAndPolarzation2.getDifferentialEmissionIntensity()+radiationWithSpinAndPolarzation3.getDifferentialEmissionIntensity()+radiationWithSpinAndPolarzation4.getDifferentialEmissionIntensity())<<std::endl;
+            continue;
+        }
+        if(useIncidentSpin&&useEmissionSpin&&usePolarization){
+            RadiationWithSpinAndPolarzation radiationWithSpinAndPolarzation(momentumZPrime,momentumXPrime,fieldParameter1,fieldParameter2,0,photonEnergy,azimuthalAngleOfEmission,spinIncidient,spinEmission,polarizationAlpha,polarizationBeta,axisOfIncidentAzimuthalAngleOfElectronSpin,axisOfIncidentPolarAngleOfElectronSpin,axisOfEmissionAzimuthalAngleOfElectronSpin,axisOfEmissionPolarAngleOfElectronSpin);
+            radiationWithSpinAndPolarzation.calculateDifferentialEmissionIntensity();
+            file<<photonEnergy<<"\t"<<2*M_PI*radiationWithSpinAndPolarzation.getDifferentialEmissionIntensity()<<std::endl;
+            continue;
+        }
     }
     file.close();
     //time end
