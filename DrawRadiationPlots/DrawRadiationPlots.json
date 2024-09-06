@@ -1,0 +1,28 @@
+{
+    "fieldParameter1": 1e-300,
+    "fieldParameter2": 1,
+    "energyPrime": 30000000000.0,
+    "momentumXPrime": 0.0,
+    "omega": 1.55,
+    "azimuthalAngleOfEmission": 0.0,
+    "incident":{
+        "spin": 0.5,
+        "polarAngle": 0.0,
+        "azimuthalAngle": 0.0
+    },
+    "emission":{
+        "spin": 0.5,
+        "polarAngle": 0.0,
+        "azimuthalAngle": 0.0
+    },
+    "polarization": {
+        "alpha": 0.0,
+        "beta": 0.0
+    },
+    "plot": {
+        "begin": 0.0,
+        "end": 30000000000.0,
+        "points": 10
+    },
+    "outputFile": "RadiationPlots.txt"
+}

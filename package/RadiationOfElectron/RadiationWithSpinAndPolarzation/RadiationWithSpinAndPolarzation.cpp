@@ -26,25 +26,26 @@ void RadiationWithSpinAndPolarzation::calculateDifferentialEmissionIntensity() {
     int label3Limit = labelLimits[2];
     //labelLeftLimit = 10;
     //labelRightLimit = 30;
-    label3Limit = 10;
+    //label3Limit = 10;
     std::cout << "labelLeft: " << labelLeftLimit << std::endl;
     std::cout << "labelRight: " << labelRightLimit << std::endl;
     std::cout << "label3: " << label3Limit << std::endl;
-    std::fstream file;
-    file.open("spectralComponent.txt", std::ios::out);
+    //std::fstream file;
+    //file.open("spectralComponent.txt", std::ios::out);
     double sumOfSpectralComponent = 0;
-    double sumOfSpectralComponentImag = 0;
-    double sumOfSpectralComponentTest = 0;
+    //double sumOfSpectralComponentImag = 0;
+    //double sumOfSpectralComponentTest = 0;
     long double time0 = std::chrono::duration_cast<std::chrono::nanoseconds>(std::chrono::system_clock::now().time_since_epoch()).count();
-    #pragma omp parallel for schedule(dynamic) reduction(+:sumOfSpectralComponent) reduction(+:sumOfSpectralComponentImag) reduction(+:sumOfSpectralComponentTest) 
+    std::cout<<"max thread: "<<omp_get_max_threads()<<std::endl;    
+    #pragma omp parallel for schedule(dynamic) reduction(+:sumOfSpectralComponent) 
     for(int labelLeft = 0; labelLeft <=labelLeftLimit; labelLeft++) {
-        if(labelLeft%100==0){
+        /*if(labelLeft%100==0){
             std::cout<<"SL: "<<labelLeft<<std::endl;
-        }
+        }*/
         for(int labelRight = -labelRightLimit; labelRight <=labelRightLimit; labelRight++) {
-            if(labelRight%100==0){
+            /*if(labelRight%100==0){
                 std::cout<<"SR: "<<labelRight<<std::endl;
-            }
+            }*/
             std::vector<double> emissionPolarAngles = calculateEmissionPolarAngle(labelLeft,labelRight);
             std::complex<double> sumOfComponentA=0;
             std::complex<double> sumOfComponentAX=0;
@@ -61,7 +62,7 @@ void RadiationWithSpinAndPolarzation::calculateDifferentialEmissionIntensity() {
                     Dimension3Vector<std::complex<double>> polarizationVectorBase1 = Dimension3Vector<std::complex<double>>(std::cos(emissionPolarAngles[labelOfEmissionPolarAngles])*std::cos(this->getEmissionAzimuthalAngle()),std::cos(emissionPolarAngles[labelOfEmissionPolarAngles])*std::sin(this->getEmissionAzimuthalAngle()),-std::sin(emissionPolarAngles[labelOfEmissionPolarAngles]));
                     Dimension3Vector<std::complex<double>> polarizationVectorBase2 = Dimension3Vector<std::complex<double>>(-std::sin(this->getEmissionAzimuthalAngle()),std::cos(this->getEmissionAzimuthalAngle()),0);
                     Dimension3Vector<std::complex<double>> polarizationVector = polarizationVectorBase1*std::cos(polarizationAlpha)+polarizationVectorBase2*std::sin(polarizationAlpha)*std::exp(std::complex<double>(0,polarizationBeta));
-                    polarizationVector = ((Dimension3Vector<std::complex<double>>(0,1,0)^photonEmissionVector).normalized()+(((photonEmissionVector)^((Dimension3Vector<std::complex<double>>(0,1,0)^photonEmissionVector).normalized())).normalized())*std::complex<double>(0,1))*(1.0/sqrt(2.0));
+                    //polarizationVector = ((Dimension3Vector<std::complex<double>>(0,1,0)^photonEmissionVector).normalized()+(((photonEmissionVector)^((Dimension3Vector<std::complex<double>>(0,1,0)^photonEmissionVector).normalized())).normalized())*std::complex<double>(0,1))*(1.0/sqrt(2.0));
                     Dimension3Vector<std::complex<double>> polarizationVectorX = polarizationVectorBase1*std::cos(polarizationAlpha);
                     Dimension3Vector<std::complex<double>> polarizationVectorY = polarizationVectorBase2*std::sin(polarizationAlpha)*std::exp(std::complex<double>(0,polarizationBeta));
                     Dimension3Vector<std::complex<double>> polarizationVectorConjugate = polarizationVector.conjugate();
@@ -114,7 +115,7 @@ void RadiationWithSpinAndPolarzation::calculateDifferentialEmissionIntensity() {
             //file<<componentASpinCoefficient<<'\t'<<componentBSpinCoefficient<<std::endl;
             //file<<sumOfComponentA*componentASpinCoefficient<<'\t'<<sumOfComponentB*componentBSpinCoefficient<<std::endl;
             std::complex<double> sumOfSpectralComponentAmplitude = sumOfComponentA*componentASpinCoefficient+sumOfComponentB*componentBSpinCoefficient*std::complex<double>(0,1);
-            sumOfSpectralComponentTest += std::abs(sumOfSpectralComponentAmplitude)*std::abs(sumOfSpectralComponentAmplitude);
+            //sumOfSpectralComponentTest += std::abs(sumOfSpectralComponentAmplitude)*std::abs(sumOfSpectralComponentAmplitude);
             sumOfSpectralComponent += (
                 (0.5+(0.5*(combinedEmissionOrientationAxis*combinedIncidentOrientationAxis)))*(std::conj(sumOfComponentA)*sumOfComponentA)+
                 (0.5-(0.5*(combinedEmissionOrientationAxis*combinedIncidentOrientationAxis)))*(sumOfComponentB.conjugate()*sumOfComponentB)+
@@ -123,15 +124,15 @@ void RadiationWithSpinAndPolarzation::calculateDifferentialEmissionIntensity() {
                 (sumOfComponentB.conjugate()^sumOfComponentB)*(combinedEmissionOrientationAxis-combinedIncidentOrientationAxis)*(0.5)*std::complex<double>(0,1)+
                 ((sumOfComponentB*(std::conj(sumOfComponentA)))-(sumOfComponentB.conjugate()*sumOfComponentA))*(combinedEmissionOrientationAxis+combinedIncidentOrientationAxis)*(0.5)*std::complex<double>(0,1)
             ).real();
-            sumOfSpectralComponentImag += (
+            /*sumOfSpectralComponentImag += (
                 (0.5+(0.5*(combinedEmissionOrientationAxis*combinedIncidentOrientationAxis)))*(std::conj(sumOfComponentA)*sumOfComponentA)+
                 (0.5-(0.5*(combinedEmissionOrientationAxis*combinedIncidentOrientationAxis)))*(sumOfComponentB.conjugate()*sumOfComponentB)+
                 (sumOfComponentB*combinedEmissionOrientationAxis)*(sumOfComponentB.conjugate()*combinedIncidentOrientationAxis)-
                 (-(sumOfComponentB.conjugate()^sumOfComponentB)+(sumOfComponentB.conjugate()*sumOfComponentA)+(sumOfComponentB*std::conj(sumOfComponentA)))*(combinedEmissionOrientationAxis^combinedIncidentOrientationAxis)*(0.5)+
                 (sumOfComponentB.conjugate()^sumOfComponentB)*(combinedEmissionOrientationAxis-combinedIncidentOrientationAxis)*(0.5)*std::complex<double>(0,1)+
                 ((sumOfComponentB*(std::conj(sumOfComponentA)))-(sumOfComponentB.conjugate()*sumOfComponentA))*(combinedEmissionOrientationAxis+combinedIncidentOrientationAxis)*(0.5)*std::complex<double>(0,1)
-            ).imag();
-            if(sumOfComponentA.real()!=0||sumOfComponentB!=Dimension3Vector<std::complex<double>>(0,0,0)){
+            ).imag();*/
+            /*if(sumOfComponentA.real()!=0||sumOfComponentB!=Dimension3Vector<std::complex<double>>(0,0,0)){
                 file<<"SL: "<<labelLeft<<" SR: "<<labelRight<<std::endl;
                 file<<(0.5+(0.5*(combinedEmissionOrientationAxis*combinedIncidentOrientationAxis)))*(std::conj(sumOfComponentA)*sumOfComponentA)<<std::endl;
                 file<<(0.5-(0.5*(combinedEmissionOrientationAxis*combinedIncidentOrientationAxis)))*(sumOfComponentB.conjugate()*sumOfComponentB)<<std::endl;
@@ -139,18 +140,18 @@ void RadiationWithSpinAndPolarzation::calculateDifferentialEmissionIntensity() {
                 file<<-(-(sumOfComponentB.conjugate()^sumOfComponentB)+(sumOfComponentB.conjugate()*sumOfComponentA)+(sumOfComponentB*std::conj(sumOfComponentA)))*(combinedEmissionOrientationAxis^combinedIncidentOrientationAxis)*(0.5)<<std::endl;
                 file<<(sumOfComponentB.conjugate()^sumOfComponentB)*(combinedEmissionOrientationAxis-combinedIncidentOrientationAxis)*(0.5)*std::complex<double>(0,1)<<std::endl;
                 file<<((sumOfComponentB*(std::conj(sumOfComponentA)))-(sumOfComponentB.conjugate()*sumOfComponentA))*(combinedEmissionOrientationAxis+combinedIncidentOrientationAxis)*(0.5)*std::complex<double>(0,1)<<std::endl;
-            }
+            }*/
         }
     }
     //file.close();
     std::cout<<"sumOfSpectralComponentReal: "<<sumOfSpectralComponent<<std::endl;
-    std::cout<<"sumOfSpectralComponentImag: "<<sumOfSpectralComponentImag<<std::endl;
-    std::cout<<"sumOfSpectralComponentTest: "<<sumOfSpectralComponentTest<<std::endl;
+    //std::cout<<"sumOfSpectralComponentImag: "<<sumOfSpectralComponentImag<<std::endl;
+    //std::cout<<"sumOfSpectralComponentTest: "<<sumOfSpectralComponentTest<<std::endl;
     long double time1 = std::chrono::duration_cast<std::chrono::nanoseconds>(std::chrono::system_clock::now().time_since_epoch()).count();
     std::cout << "Time: " << (time1-time0)/1000000000 << " seconds" << std::endl;
     double fineStructureConstant = 1.0/137;
     this->setDifferentialEmissionIntensity(((fineStructureConstant*electronMass*electronMass*this->getPhotonEnergy()*this->getResidualEnergy())/(2.0*M_PI*this->getEnergy()*this->getEnergy()*this->getEnergy()))*sumOfSpectralComponent);
-    std::cout<<"differentialEmissionIntensity: "<<this->getDifferentialEmissionIntensity()<<std::endl;
+    //std::cout<<"differentialEmissionIntensity: "<<this->getDifferentialEmissionIntensity()<<std::endl;
     //std::cout<<"differentialEmissionIntensityTest: "<<((fineStructureConstant*electronMass*electronMass*this->getPhotonEnergy()*this->getResidualEnergy())/(2.0*M_PI*this->getEnergy()*this->getEnergy()*this->getEnergy()))*sumOfSpectralComponentTest<<std::endl;
 }
 
