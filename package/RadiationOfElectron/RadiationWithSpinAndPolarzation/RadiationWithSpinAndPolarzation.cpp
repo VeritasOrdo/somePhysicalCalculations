@@ -36,9 +36,10 @@ void RadiationWithSpinAndPolarzation::calculateDifferentialEmissionIntensity() {
     //double sumOfSpectralComponentImag = 0;
     //double sumOfSpectralComponentTest = 0;
     long double time0 = std::chrono::duration_cast<std::chrono::nanoseconds>(std::chrono::system_clock::now().time_since_epoch()).count();
-    std::cout<<"max thread: "<<omp_get_max_threads()<<std::endl;    
+    std::cout<<"max thread: "<<omp_get_max_threads()<<std::endl;
+    std::cout << "label left limit min: " << -std::min(labelLeftLimit/100,40000) << std::endl;
     #pragma omp parallel for schedule(dynamic) reduction(+:sumOfSpectralComponent) 
-    for(int labelLeft = 0; labelLeft <=labelLeftLimit; labelLeft++) {
+    for(int labelLeft = -std::min(labelLeftLimit/100,40000); labelLeft <=labelLeftLimit; labelLeft++) {
         /*if(labelLeft%100==0){
             std::cout<<"SL: "<<labelLeft<<std::endl;
         }*/

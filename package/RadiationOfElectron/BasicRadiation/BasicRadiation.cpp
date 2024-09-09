@@ -78,9 +78,9 @@ std::vector<int> BasicRadiationOfElectronInCounterpropagatingLaser::calculateLab
     int label2Limit = 0;
     int label3Limit = 0;
     double trigonometricCoefficient1Max = this->trigonometricCoefficient1(M_PI/2);
-    trigonometricCoefficient1Max = this->trigonometricCoefficient1(std::max(this->getFieldParameter1(),this->getFieldParameter2())*std::sqrt(1+this->getVelocityXPrime()*this->getVelocityXPrime()));
+    trigonometricCoefficient1Max = this->trigonometricCoefficient1((std::max(this->getFieldParameter1(),this->getFieldParameter2())+5)*std::sqrt(1-this->getVelocityZPrime()*this->getVelocityZPrime()));
     double trigonometricCoefficient2Max = this->trigonometricCoefficient2(M_PI/2);
-    trigonometricCoefficient2Max = this->trigonometricCoefficient2(std::max(this->getFieldParameter1(),this->getFieldParameter2())*std::sqrt(1+this->getVelocityXPrime()*this->getVelocityXPrime()));
+    trigonometricCoefficient2Max = this->trigonometricCoefficient2((std::max(this->getFieldParameter1(),this->getFieldParameter2())+5)*std::sqrt(1-this->getVelocityZPrime()*this->getVelocityZPrime()));
     double trigonometricCoefficient3Max = this->trigonometricCoefficient3(0);
     std::cout<<"z1Max: "<<trigonometricCoefficient1Max<<std::endl;
     std::cout<<"z2Max: "<<trigonometricCoefficient2Max<<std::endl;
