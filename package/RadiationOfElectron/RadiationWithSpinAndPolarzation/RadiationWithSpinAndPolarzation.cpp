@@ -143,6 +143,7 @@ void RadiationWithSpinAndPolarzation::calculateDifferentialEmissionIntensity() {
             }*/
         }
     }
+    // theta+5/gamma
     //file.close();
     std::cout<<"sumOfSpectralComponentReal: "<<sumOfSpectralComponent<<std::endl;
     //std::cout<<"sumOfSpectralComponentImag: "<<sumOfSpectralComponentImag<<std::endl;

@@ -10,7 +10,7 @@
 using json = nlohmann::json;
 
 int main(){
-    std::fstream parameterFile("DrawRadiationPlots.json");
+    std::fstream parameterFile("DrawRadiationPlots.json5");
     if(!parameterFile.is_open()){
         std::cout<<"parameter file not found"<<std::endl;
         return 0;

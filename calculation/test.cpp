@@ -120,7 +120,7 @@ int main(){
     double axisOfEmissionPolarAngleOfElectronSpin = PI/2;
     double axisOfEmissionAzimuthalAngleOfElectronSpin = PI/2;
     double azimuthalAngleOfEmission = 0;
-    double photonEnergy = 2.0*1000000000.0;
+    double photonEnergy = 27.0*1000000000.0;
     RadiationWithSpinAndPolarzation radiationWithSpinAndPolarzation(momentumZPrime,momentumXPrime,fieldParameter1,fieldParameter2,0,photonEnergy,azimuthalAngleOfEmission,spinIncidient,spinEmission,polarizationAlpha,polarizationBeta,axisOfIncidentAzimuthalAngleOfElectronSpin,axisOfIncidentPolarAngleOfElectronSpin,axisOfEmissionAzimuthalAngleOfElectronSpin,axisOfEmissionPolarAngleOfElectronSpin);
     radiationWithSpinAndPolarzation.calculateDifferentialEmissionIntensity();
     std::cout << "differentialEmissionIntensity: " << 2*M_PI*radiationWithSpinAndPolarzation.getDifferentialEmissionIntensity() << std::endl;
