@@ -222,7 +222,7 @@ void BasicRadiationOfElectronInCounterpropagatingLaser::calculateDifferentialEmi
     int label3Limit = labelLimits[2];
     //labelLeftLimit = 20000;
     //labelRightLimit = 30;
-    label3Limit = 10;
+    //label3Limit = 10;
     std::cout<<"labelLeftLimit: "<<labelLeftLimit<<std::endl;
     std::cout<<"labelRightLimit: "<<labelRightLimit<<std::endl;
     std::cout<<"label3Limit: "<<label3Limit<<std::endl;

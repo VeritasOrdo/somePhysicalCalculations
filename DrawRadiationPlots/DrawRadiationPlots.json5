@@ -1,4 +1,5 @@
 {
+    // The parameters of the field
     "fieldParameter1": 1e-300,
     "fieldParameter2": 1,
     "energyPrime": 30000000000.0,
