@@ -1,18 +1,17 @@
 {
-    // The parameters of the field
-    "fieldParameter1": 1e-300,
-    "fieldParameter2": 1,
-    "energyPrime": 30000000000.0,
+    "fieldParameter1": 0.02,
+    "fieldParameter2": 0.1,
+    "energyPrime": 15330000,
     "momentumXPrime": 0.0,
     "omega": 1.55,
     "azimuthalAngleOfEmission": 0.0,
-    "useIncidentSpin": true,
+    "useIncidentSpin": false,
     "incident":{
         "spin": 0.5,
         "polarAngle": 0.0,
         "azimuthalAngle": 0.0
     },
-    "useEmissionSpin": true,
+    "useEmissionSpin": false,
     "emission":{
         "spin": 0.5,
         "polarAngle": 0.0,
@@ -25,8 +24,8 @@
     },
     "plot": {
         "begin": 0.0,
-        "end": 30000000000.0,
-        "points": 10
+        "end": 15330000,
+        "points": 1000
     },
-    "outputFile": "RadiationPlots.txt"
+    "outputFile": "30m_0.02_0.1.txt"
 }
