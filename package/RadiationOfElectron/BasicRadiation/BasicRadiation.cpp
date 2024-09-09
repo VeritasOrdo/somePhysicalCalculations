@@ -205,8 +205,8 @@ std::vector<std::complex<double>> BasicRadiationOfElectronInCounterpropagatingLa
     );
     std::complex<double> spectralComponentZ = (
         zero1*zero2*(
-            (this->getInitialMomentumZ()/electronMass)*zero3-
-            ((electronMass*this->getFieldParameter1()*this->getFieldParameter2())/(this->getVelocityZPrime()*this->getEnergy()))*first3
+            ((this->getInitialMomentumZ()/electronMass)*zero3)-
+            (((electronMass*this->getFieldParameter1()*this->getFieldParameter2())/(this->getVelocityZPrime()*this->getEnergy()))*first3)
         )+
         zero3*((this->getInitialMomentumX()*omega)/this->getEnergy())*(
             (this->getFieldParameter1()/this->getOmega1())*first1*zero2-
@@ -214,35 +214,35 @@ std::vector<std::complex<double>> BasicRadiationOfElectronInCounterpropagatingLa
         )
     );*/
     std::complex<double> spectralComponentT = (
-        (
+        ((
             zero3*(this->getEnergy()/electronMass)+
             first3*((rotationDirectionPlus*omega*electronMass*this->getFieldParameter1()*this->getFieldParameter2())/(this->getEnergy()*(this->getOmega1()+this->getOmega2())))
-        )*zero1*zero2+
-        this->getInitialMomentumX()*omega*(
-            ((this->getFieldParameter1())/(this->getEnergy()*this->getOmega1()))*first1*zero2+
-            ((this->getFieldParameter2())/(this->getEnergy()*this->getOmega2()))*zero1*first2
-        )*zero3
+        )*zero1*zero2)+
+        (this->getInitialMomentumX()*omega*(
+            (((this->getFieldParameter1())/(this->getEnergy()*this->getOmega1()))*first1*zero2)+
+            (((this->getFieldParameter2())/(this->getEnergy()*this->getOmega2()))*zero1*first2)
+        )*zero3)
     );
     std::complex<double> spectralComponentX = (
         zero3*(
-            (this->getInitialMomentumX()/electronMass)*zero1*zero2+
-            this->getFieldParameter1()*first1*zero2+
-            this->getFieldParameter2()*zero1*first2
+            ((this->getInitialMomentumX()/electronMass)*zero1*zero2)+
+            (this->getFieldParameter1()*first1*zero2)+
+            (this->getFieldParameter2()*zero1*first2)
         )
     );
     std::complex<double> spectralComponentY = (
-        this->getFieldParameter1()*rotationDirection1*second1*zero2+
-        this->getFieldParameter2()*rotationDirection2*zero1*second2
+        (this->getFieldParameter1()*rotationDirection1*second1*zero2)+
+        (this->getFieldParameter2()*rotationDirection2*zero1*second2)
     )*zero3;
     std::complex<double> spectralComponentZ = (
-        zero1*zero2*(
-            (this->getInitialMomentumZ()/electronMass)*zero3-
-            ((rotationDirectionMinus*omega*electronMass*this->getFieldParameter1()*this->getFieldParameter2())/(this->getEnergy()*(this->getOmega1()-this->getOmega2())))*first3
-        )+
-        zero3*((this->getInitialMomentumX()*omega)/this->getEnergy())*(
-            (this->getFieldParameter1()/this->getOmega1())*first1*zero2-
-            (this->getFieldParameter2()/this->getOmega2())*zero1*first2
-        )
+        (zero1*zero2*(
+            ((this->getInitialMomentumZ()/electronMass)*zero3)-
+            (((rotationDirectionMinus*omega*electronMass*this->getFieldParameter1()*this->getFieldParameter2())/(this->getEnergy()*(this->getOmega1()-this->getOmega2())))*first3)
+        ))+
+        (zero3*((this->getInitialMomentumX()*omega)/this->getEnergy())*(
+            ((this->getFieldParameter1()/this->getOmega1())*first1*zero2)-
+            ((this->getFieldParameter2()/this->getOmega2())*zero1*first2)
+        ))
     );
     std::vector<std::complex<double>> spectralComponent = {spectralComponentT,spectralComponentX,spectralComponentY,spectralComponentZ};
     return spectralComponent;
@@ -254,9 +254,9 @@ void BasicRadiationOfElectronInCounterpropagatingLaser::calculateDifferentialEmi
     int labelLeftLimit = labelLimits[0]+labelLimits[2];
     int labelRightLimit = labelLimits[1]+labelLimits[2];
     int label3Limit = labelLimits[2];
-    //labelLeftLimit = 20000;
-    //labelRightLimit = 30;
-    //label3Limit = 10;
+    //labelLeftLimit = 2000;
+    //labelRightLimit = 100;
+    //label3Limit = 30;
     std::cout<<"labelLeftLimit: "<<labelLeftLimit<<std::endl;
     std::cout<<"labelRightLimit: "<<labelRightLimit<<std::endl;
     std::cout<<"label3Limit: "<<label3Limit<<std::endl;
@@ -265,8 +265,9 @@ void BasicRadiationOfElectronInCounterpropagatingLaser::calculateDifferentialEmi
     double sumOfSpectralComponentTime = 0;
     //std::fstream file;
     //file.open("spectralComponent1.txt",std::ios::out);
+    std::cout << "label left limit min: " << -std::min(std::max(labelLeftLimit/100,500),40000) << std::endl;
     #pragma omp parallel for schedule(dynamic) reduction(+:sumOfSpectralComponentFour,sumOfSpectralComponentTime)
-    for(int labelLeft = 0;labelLeft<=labelLeftLimit;labelLeft++){
+    for(int labelLeft = -std::min(std::max(labelLeftLimit/100,500),40000);labelLeft<=labelLeftLimit;labelLeft++){
         if(labelLeft%100==0){
             std::cout<<"labelLeft: "<<labelLeft<<std::endl;
         }

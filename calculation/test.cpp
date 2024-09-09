@@ -104,10 +104,10 @@
 
 int main(){
     double electronMass = 511000;
-    double fieldParameter1 = 1e-300;
-    double fieldParameter2 = 1;
+    double fieldParameter1 = 0.02;
+    double fieldParameter2 = 0.1;
     double reducedMass = electronMass*std::sqrt(1+fieldParameter1*fieldParameter1+fieldParameter2*fieldParameter2);
-    double energyPrime = 30000000000.0;
+    double energyPrime = 30*electronMass;
     double momentumXPrime = 0;
     double momentumZPrime = std::sqrt(energyPrime*energyPrime-reducedMass*reducedMass-momentumXPrime*momentumXPrime);
     double omega = 1.55;
@@ -120,11 +120,14 @@ int main(){
     double axisOfEmissionPolarAngleOfElectronSpin = 0;
     double axisOfEmissionAzimuthalAngleOfElectronSpin = 0;
     double azimuthalAngleOfEmission = 0;
-    double photonEnergy = 12.0*1000000000.0;
-    RadiationWithSpinAndPolarzation radiationWithSpinAndPolarzation(momentumZPrime,momentumXPrime,fieldParameter1,fieldParameter2,0,photonEnergy,azimuthalAngleOfEmission,spinIncidient,spinEmission,polarizationAlpha,polarizationBeta,axisOfIncidentAzimuthalAngleOfElectronSpin,axisOfIncidentPolarAngleOfElectronSpin,axisOfEmissionAzimuthalAngleOfElectronSpin,axisOfEmissionPolarAngleOfElectronSpin);
-    radiationWithSpinAndPolarzation.calculateDifferentialEmissionIntensity();
-    std::cout << "differentialEmissionIntensity: " << 2*M_PI*radiationWithSpinAndPolarzation.getDifferentialEmissionIntensity() << std::endl;
-    std::cout << "cosPI/2: " << std::cos(M_PI/2) << std::endl;
-    std::cout << "cosPI/2_2: " << std::cos(PI/2) << std::endl;
+    double photonEnergy = 5000;
+    //RadiationWithSpinAndPolarzation radiationWithSpinAndPolarzation(momentumZPrime,momentumXPrime,fieldParameter1,fieldParameter2,0,photonEnergy,azimuthalAngleOfEmission,spinIncidient,spinEmission,polarizationAlpha,polarizationBeta,axisOfIncidentAzimuthalAngleOfElectronSpin,axisOfIncidentPolarAngleOfElectronSpin,axisOfEmissionAzimuthalAngleOfElectronSpin,axisOfEmissionPolarAngleOfElectronSpin,1,1);
+    //radiationWithSpinAndPolarzation.calculateDifferentialEmissionIntensity();
+    BasicRadiationOfElectronInCounterpropagatingLaser radiationOfElectron(momentumZPrime,momentumXPrime,fieldParameter1,fieldParameter2,0,photonEnergy,azimuthalAngleOfEmission,1,1);
+    radiationOfElectron.calculateDifferentialEmissionIntensity();
+    double radiation = radiationOfElectron.getDifferentialEmissionIntensity();
+    std::cout << "differentialEmissionIntensity: " << 2*M_PI*radiation << std::endl;
+    //std::cout << "cosPI/2: " << std::cos(M_PI/2) << std::endl;
+    //std::cout << "cosPI/2_2: " << std::cos(PI/2) << std::endl;
     return 0;
 }
