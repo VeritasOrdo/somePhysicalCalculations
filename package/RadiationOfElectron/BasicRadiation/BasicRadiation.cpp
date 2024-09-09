@@ -31,12 +31,16 @@ double myBesselFunction(int label,double argument) {
     }
 }
 
-BasicRadiationOfElectronInCounterpropagatingLaser::BasicRadiationOfElectronInCounterpropagatingLaser(double momentumZPrime,double momentumXPrime,double fieldParameter1,double fieldParameter2,double properTime,double photonEnergy,double emissionAzimuthalAngle) : ElectronInCounterpropagatingLaser(momentumZPrime,momentumXPrime,fieldParameter1,fieldParameter2,properTime) {
+BasicRadiationOfElectronInCounterpropagatingLaser::BasicRadiationOfElectronInCounterpropagatingLaser(double momentumZPrime,double momentumXPrime,double fieldParameter1,double fieldParameter2,double properTime,double photonEnergy,double emissionAzimuthalAngle, double rotationDirection1, double rotationDirection2) : ElectronInCounterpropagatingLaser(momentumZPrime,momentumXPrime,fieldParameter1,fieldParameter2,properTime) {
     this->photonEnergy = photonEnergy;
     this->emissionAzimuthalAngle = emissionAzimuthalAngle;
     this->residualEnergy = this->getEnergy()-this->photonEnergy;
     this->energyRatio = this->photonEnergy/this->residualEnergy;
     this->differentialEmissionIntensity = 0;
+    this->rotationDirection1 = rotationDirection1;
+    this->rotationDirection2 = rotationDirection2;
+    this->rotationDirectionPlus = std::abs(this->rotationDirection1-this->rotationDirection2);
+    this->rotationDirectionMinus = std::abs(this->rotationDirection1+this->rotationDirection2);
     std::cout << "the differential emission intensity has not been calculated yet" << std::endl;
     std::cout << "Please call the calculateDifferentialEmissionIntensity() method to calculate the differential emission intensity" << std::endl;
 }
@@ -180,7 +184,7 @@ std::vector<std::complex<double>> BasicRadiationOfElectronInCounterpropagatingLa
     std::complex<double> first3 = BasicMathFunctionDefinition::relatedBesselFunctionFirstKind(bessel3,bessel3Minus,bessel3Plus,label3,trigonometricCoefficient3,0);
     std::complex<double> second1 = BasicMathFunctionDefinition::relatedBesselFunctionSecondKind(bessel1,bessel1Minus,bessel1Plus,label1,trigonometricCoefficient1,auxiliaryAngle1);
     std::complex<double> second2 = BasicMathFunctionDefinition::relatedBesselFunctionSecondKind(bessel2,bessel2Minus,bessel2Plus,label2,trigonometricCoefficient2,auxiliaryAngle2);
-    std::complex<double> spectralComponentT = (
+    /*std::complex<double> spectralComponentT = (
         zero3*(
             (this->getEnergy()/electronMass)*zero1*zero2+
             ((this->getInitialMomentumX()*omega*this->getFieldParameter1())/(this->getOmega1()*this->getEnergy()))*first1*zero2+
@@ -204,13 +208,43 @@ std::vector<std::complex<double>> BasicRadiationOfElectronInCounterpropagatingLa
             (this->getInitialMomentumZ()/electronMass)*zero3-
             ((electronMass*this->getFieldParameter1()*this->getFieldParameter2())/(this->getVelocityZPrime()*this->getEnergy()))*first3
         )+
-        zero3*((this->getInitialMomentumX()*omega)/electronMass)*(
+        zero3*((this->getInitialMomentumX()*omega)/this->getEnergy())*(
+            (this->getFieldParameter1()/this->getOmega1())*first1*zero2-
+            (this->getFieldParameter2()/this->getOmega2())*zero1*first2
+        )
+    );*/
+    std::complex<double> spectralComponentT = (
+        (
+            zero3*(this->getEnergy()/electronMass)+
+            first3*((rotationDirectionPlus*omega*electronMass*this->getFieldParameter1()*this->getFieldParameter2())/(this->getEnergy()*(this->getOmega1()+this->getOmega2())))
+        )*zero1*zero2+
+        this->getInitialMomentumX()*omega*(
+            ((this->getFieldParameter1())/(this->getEnergy()*this->getOmega1()))*first1*zero2+
+            ((this->getFieldParameter2())/(this->getEnergy()*this->getOmega2()))*zero1*first2
+        )*zero3
+    );
+    std::complex<double> spectralComponentX = (
+        zero3*(
+            (this->getInitialMomentumX()/electronMass)*zero1*zero2+
+            this->getFieldParameter1()*first1*zero2+
+            this->getFieldParameter2()*zero1*first2
+        )
+    );
+    std::complex<double> spectralComponentY = (
+        this->getFieldParameter1()*rotationDirection1*second1*zero2+
+        this->getFieldParameter2()*rotationDirection2*zero1*second2
+    )*zero3;
+    std::complex<double> spectralComponentZ = (
+        zero1*zero2*(
+            (this->getInitialMomentumZ()/electronMass)*zero3-
+            ((rotationDirectionMinus*omega*electronMass*this->getFieldParameter1()*this->getFieldParameter2())/(this->getEnergy()*(this->getOmega1()-this->getOmega2())))*first3
+        )+
+        zero3*((this->getInitialMomentumX()*omega)/this->getEnergy())*(
             (this->getFieldParameter1()/this->getOmega1())*first1*zero2-
             (this->getFieldParameter2()/this->getOmega2())*zero1*first2
         )
     );
-    std::complex<double> spectralComponentBase = zero1*zero2*zero3;
-    std::vector<std::complex<double>> spectralComponent = {spectralComponentT,spectralComponentX,spectralComponentY,spectralComponentZ,spectralComponentBase};
+    std::vector<std::complex<double>> spectralComponent = {spectralComponentT,spectralComponentX,spectralComponentY,spectralComponentZ};
     return spectralComponent;
 }
 

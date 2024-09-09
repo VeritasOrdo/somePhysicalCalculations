@@ -13,6 +13,10 @@ class BasicRadiationOfElectronInCounterpropagatingLaser: public ElectronInCounte
         double differentialEmissionIntensity;
         double residualEnergy;
         double energyRatio;
+        double rotationDirection1;
+        double rotationDirection2;
+        double rotationDirectionPlus;
+        double rotationDirectionMinus;
         double calculateZ1X(double emissionPolarAngle);
         double calculateZ1Y(double emissionPolarAngle);
         double calculateZ2X(double emissionPolarAngle);
@@ -26,7 +30,7 @@ class BasicRadiationOfElectronInCounterpropagatingLaser: public ElectronInCounte
         
     public:
         void setDifferentialEmissionIntensity(double differentialEmissionIntensity);
-        BasicRadiationOfElectronInCounterpropagatingLaser(double momentumZPrime,double momentumXPrime,double fieldParameter1,double fieldParameter2,double properTime,double photonEnergy,double emissionAzimuthalAngle);
+        BasicRadiationOfElectronInCounterpropagatingLaser(double momentumZPrime,double momentumXPrime,double fieldParameter1,double fieldParameter2,double properTime,double photonEnergy,double emissionAzimuthalAngle,double rotationDirection1,double rotationDirection2);
         virtual void calculateDifferentialEmissionIntensity();
         double getPhotonEnergy();
         double getEmissionAzimuthalAngle();
