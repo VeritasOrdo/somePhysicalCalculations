@@ -241,12 +241,12 @@ void RadiationWithSpinAndPolarzation::calculateStokesParameter() {
             //file<<sumOfComponentA*componentASpinCoefficient<<'\t'<<sumOfComponentB*componentBSpinCoefficient<<std::endl;
             std::complex<double> sumOfSpectralComponentAmplitudeX = sumOfComponentAX*componentASpinCoefficient+sumOfComponentBX*componentBSpinCoefficient*std::complex<double>(0,1);
             std::complex<double> sumOfSpectralComponentAmplitudeY = sumOfComponentAY*componentASpinCoefficient+sumOfComponentBY*componentBSpinCoefficient*std::complex<double>(0,1);
-            if(sumOfSpectralComponentAmplitudeX.real()!=0){
+            /*if(sumOfSpectralComponentAmplitudeX.real()!=0){
                 std::cout<<"sumOfSpectralComponentAmplitudeX: "<<sumOfSpectralComponentAmplitudeX<<std::endl;
                 std::cout<<"sumOfSpectralComponentAmplitudeY: "<<sumOfSpectralComponentAmplitudeY<<std::endl;
                 std::cout<<"sumOfComponentAY: "<<sumOfComponentAY<<std::endl;
                 std::cout<<"sumOfComponentBY: "<<sumOfComponentBY<<std::endl;
-            }
+            }*/
             //sumOfSpectralComponentTest += std::abs(sumOfSpectralComponentAmplitude)*std::abs(sumOfSpectralComponentAmplitude);
             sumOfSpectralComponentStokesParameterI += std::abs(sumOfSpectralComponentAmplitudeX)*std::abs(sumOfSpectralComponentAmplitudeX)+std::abs(sumOfSpectralComponentAmplitudeY)*std::abs(sumOfSpectralComponentAmplitudeY);
             sumOfSpectralComponentStokesParameterQ += std::abs(sumOfSpectralComponentAmplitudeX)*std::abs(sumOfSpectralComponentAmplitudeX)-std::abs(sumOfSpectralComponentAmplitudeY)*std::abs(sumOfSpectralComponentAmplitudeY);
