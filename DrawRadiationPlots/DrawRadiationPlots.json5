@@ -1,5 +1,5 @@
 {
-    "fieldParameter1": 0.02,
+    "fieldParameter1": 2,
     "fieldParameter2": 0.1,
     "rotationDirection1": 1,
     "rotationDirection2": 1,
@@ -25,9 +25,9 @@
         "beta": 0.0
     },
     "plot": {
-        "begin": 0.0,
-        "end": 15330000,
-        "points": 1000
+        "begin": 0,
+        "end": 6000,
+        "points": 5000
     },
-    "outputFile": "30m_0.02_0.1.txt"
+    "outputFile": "30m_2_0.1_allFalse.txt"
 }

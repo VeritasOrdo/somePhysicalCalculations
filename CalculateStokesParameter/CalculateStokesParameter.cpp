@@ -35,10 +35,22 @@ int main(){
     double axisOfEmissionPolarAngleOfElectronSpin = parameter["emission"]["polarAngle"];
     double axisOfEmissionAzimuthalAngleOfElectronSpin = parameter["emission"]["azimuthalAngle"];
     double azimuthalAngleOfEmission = parameter["azimuthalAngleOfEmission"];
-    RadiationWithSpinAndPolarzation radiationWithSpinAndPolarzation(momentumZPrime,momentumXPrime,fieldParameter1,fieldParameter2,0,omega,azimuthalAngleOfEmission,spinIncidient,spinEmission,polarizationAlpha,polarizationBeta,axisOfIncidentAzimuthalAngleOfElectronSpin,axisOfIncidentPolarAngleOfElectronSpin,axisOfEmissionAzimuthalAngleOfElectronSpin,axisOfEmissionPolarAngleOfElectronSpin,rotationDirection1,rotationDirection2);
-    radiationWithSpinAndPolarzation.calculateStokesParameter();
-    std::vector<double> stokesParameter = radiationWithSpinAndPolarzation.getStokesParameterNormalized();
-    std::cout<<"Stokes Parameter: "<<stokesParameter[0]<<" "<<stokesParameter[1]<<" "<<stokesParameter[2]<<" "<<stokesParameter[3]<<std::endl;
+    double begin = 0;
+    double end = 6000;
+    double step = 1;
+    std::fstream file;
+    file.open("StokesParameter.txt",std::ios::out);
+    for(double photonEnergy=begin+step;photonEnergy<end;photonEnergy+=step){
+        RadiationWithSpinAndPolarzation radiationWithSpinAndPolarzation(momentumZPrime,momentumXPrime,fieldParameter1,fieldParameter2,0,photonEnergy,azimuthalAngleOfEmission,spinIncidient,spinEmission,polarizationAlpha,polarizationBeta,axisOfIncidentAzimuthalAngleOfElectronSpin,axisOfIncidentPolarAngleOfElectronSpin,axisOfEmissionAzimuthalAngleOfElectronSpin,axisOfEmissionPolarAngleOfElectronSpin,rotationDirection1,rotationDirection2);
+        radiationWithSpinAndPolarzation.calculateStokesParameter();
+        std::vector<double> stokesParameter = radiationWithSpinAndPolarzation.getStokesParameterNormalized();
+        file<<photonEnergy<<"\t"<<stokesParameter[0]<<"\t"<<stokesParameter[1]<<"\t"<<stokesParameter[2]<<"\t"<<stokesParameter[3]<<std::endl;
+    }
+    file.close();
+    //RadiationWithSpinAndPolarzation radiationWithSpinAndPolarzation(momentumZPrime,momentumXPrime,fieldParameter1,fieldParameter2,0,1,azimuthalAngleOfEmission,spinIncidient,spinEmission,polarizationAlpha,polarizationBeta,axisOfIncidentAzimuthalAngleOfElectronSpin,axisOfIncidentPolarAngleOfElectronSpin,axisOfEmissionAzimuthalAngleOfElectronSpin,axisOfEmissionPolarAngleOfElectronSpin,rotationDirection1,rotationDirection2);
+    //radiationWithSpinAndPolarzation.calculateStokesParameter();
+    //std::vector<double> stokesParameter = radiationWithSpinAndPolarzation.getStokesParameterNormalized();
+    //std::cout<<"Stokes Parameter: "<<stokesParameter[0]<<" "<<stokesParameter[1]<<" "<<stokesParameter[2]<<" "<<stokesParameter[3]<<std::endl;
     return 0;
 }
 

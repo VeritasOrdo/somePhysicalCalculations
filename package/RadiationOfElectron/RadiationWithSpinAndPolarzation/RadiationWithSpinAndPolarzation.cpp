@@ -41,9 +41,9 @@ void RadiationWithSpinAndPolarzation::calculateDifferentialEmissionIntensity() {
     std::cout << "label left limit min: " << -std::min(std::max(labelLeftLimit/100,500),40000) << std::endl;
     #pragma omp parallel for schedule(dynamic) reduction(+:sumOfSpectralComponent) 
     for(int labelLeft = -std::min(std::max(labelLeftLimit/100,500),40000); labelLeft <=labelLeftLimit; labelLeft++) {
-        /*if(labelLeft%100==0){
+        if(labelLeft%100==0){
             std::cout<<"SL: "<<labelLeft<<std::endl;
-        }*/
+        }
         for(int labelRight = -labelRightLimit; labelRight <=labelRightLimit; labelRight++) {
             /*if(labelRight%100==0){
                 std::cout<<"SR: "<<labelRight<<std::endl;

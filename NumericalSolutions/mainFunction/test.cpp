@@ -95,22 +95,25 @@ int main(){
     std::vector<double> energy = numericalSolutionOfMoleculeInCounterpropagatingLaser.getEnergy();
     std::vector<Dimension3Vector<double>> velocity = numericalSolutionOfMoleculeInCounterpropagatingLaser.getVelocity();
     //file open by bin
-    std::ofstream file("250mV.bin",std::ios::binary);
+    //std::ofstream file("250mV.bin",std::ios::binary);
+    std::ofstream file;
+    file.open("250mV.txt",std::ios::out);
     //write data to file
     //time start
     auto timeFileStart = std::chrono::high_resolution_clock::now();
     //write data to file
-    for(const auto& v:velocity){
+    /*for(const auto& v:velocity){
         double x = v.getX();
         double y = v.getY();
         double z = v.getZ();
         file.write(reinterpret_cast<char*>(&x),sizeof(double));
         file.write(reinterpret_cast<char*>(&y),sizeof(double));
         file.write(reinterpret_cast<char*>(&z),sizeof(double));
-    }
-    /*for(int i=0;i<numericalSolutionOfMoleculeInCounterpropagatingLaser.getVelocity().size();i++){
-        file<<numericalSolutionOfMoleculeInCounterpropagatingLaser.getVelocity()[i].getX()<<"\t"<<numericalSolutionOfMoleculeInCounterpropagatingLaser.getVelocity()[i].getY()<<"\t"<<numericalSolutionOfMoleculeInCounterpropagatingLaser.getVelocity()[i].getZ()<<std::endl;
     }*/
+    std::vector<Dimension3Vector<double>> velocityVector= numericalSolutionOfMoleculeInCounterpropagatingLaser.getVelocity();
+    for(int i=0;i<velocityVector.size();i++){
+        file<<velocityVector[i].getX()<<"\t"<<velocityVector[i].getY()<<"\t"<<velocityVector[i].getZ()<<std::endl;
+    }
     auto timeFileEnd = std::chrono::high_resolution_clock::now();
     std::cout<<"TimeOfWritingFile: "<<std::chrono::duration_cast<std::chrono::milliseconds>(timeFileEnd-timeFileStart).count()<<"ms"<<std::endl;
     file.close();
