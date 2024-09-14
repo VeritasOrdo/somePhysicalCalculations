@@ -254,7 +254,7 @@ void BasicRadiationOfElectronInCounterpropagatingLaser::calculateDifferentialEmi
     int labelLeftLimit = labelLimits[0]+labelLimits[2];
     int labelRightLimit = labelLimits[1]+labelLimits[2];
     int label3Limit = labelLimits[2];
-    labelLeftLimit = 45000;
+    //labelLeftLimit = 45000;
     //labelRightLimit = 100;
     //label3Limit = 30;
     std::cout<<"labelLeftLimit: "<<labelLeftLimit<<std::endl;
@@ -267,7 +267,7 @@ void BasicRadiationOfElectronInCounterpropagatingLaser::calculateDifferentialEmi
     //file.open("spectralComponent1.txt",std::ios::out);
     std::cout << "label left limit min: " << -std::min(std::max(labelLeftLimit/100,500),40000) << std::endl;
     #pragma omp parallel for schedule(dynamic) reduction(+:sumOfSpectralComponentFour,sumOfSpectralComponentTime)
-    for(int labelLeft = -labelLeftLimit;labelLeft<=labelLeftLimit;labelLeft++){
+    for(int labelLeft = -std::min(std::max(labelLeftLimit/100,500),40000);labelLeft<=labelLeftLimit;labelLeft++){
         if(labelLeft%100==0){
             std::cout<<"labelLeft: "<<labelLeft<<std::endl;
         }
