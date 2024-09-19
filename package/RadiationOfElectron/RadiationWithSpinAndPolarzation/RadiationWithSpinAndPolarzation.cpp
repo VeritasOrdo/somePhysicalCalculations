@@ -16,7 +16,7 @@ RadiationWithSpinAndPolarzation::RadiationWithSpinAndPolarzation(double momentum
     this->emissionOrientationAxis = Dimension3Vector<double>(std::cos(axisOfEmissionAzimuthalAngleOfElectronSpin)*std::sin(axisOfEmissionPolarAngleOfElectronSpin),std::sin(axisOfEmissionAzimuthalAngleOfElectronSpin)*std::sin(axisOfEmissionPolarAngleOfElectronSpin),std::cos(axisOfEmissionPolarAngleOfElectronSpin));
     this->combinedIncidentOrientationAxis = incidentOrientationAxis*this->spinIncident*2.0;
     this->combinedEmissionOrientationAxis = emissionOrientationAxis*this->spinEmission*2.0;
-    this->stokesParameterNormalized = {0,0,0,0};
+    this->stokesParameter = {0,0,0,0};
 }
 
 void RadiationWithSpinAndPolarzation::calculateDifferentialEmissionIntensity() {
@@ -264,7 +264,7 @@ void RadiationWithSpinAndPolarzation::calculateStokesParameter() {
     //std::cout<<"sumOfSpectralComponentTest: "<<sumOfSpectralComponentTest<<std::endl;
     long double time1 = std::chrono::duration_cast<std::chrono::nanoseconds>(std::chrono::system_clock::now().time_since_epoch()).count();
     std::cout << "Time: " << (time1-time0)/1000000000 << " seconds" << std::endl;
-    stokesParameterNormalized={sumOfSpectralComponentStokesParameterI/sumOfSpectralComponentStokesParameterI,sumOfSpectralComponentStokesParameterQ/sumOfSpectralComponentStokesParameterI,sumOfSpectralComponentStokesParameterU/sumOfSpectralComponentStokesParameterI,sumOfSpectralComponentStokesParameterV/sumOfSpectralComponentStokesParameterI};
+    stokesParameter = {sumOfSpectralComponentStokesParameterI,sumOfSpectralComponentStokesParameterQ,sumOfSpectralComponentStokesParameterU,sumOfSpectralComponentStokesParameterV};
     //std::cout<<"differentialEmissionIntensity: "<<this->getDifferentialEmissionIntensity()<<std::endl;
     //std::cout<<"differentialEmissionIntensityTest: "<<((fineStructureConstant*electronMass*electronMass*this->getPhotonEnergy()*this->getResidualEnergy())/(2.0*M_PI*this->getEnergy()*this->getEnergy()*this->getEnergy()))*sumOfSpectralComponentTest<<std::endl;
 }
@@ -301,8 +301,12 @@ Dimension3Vector<double> RadiationWithSpinAndPolarzation::getEmissionOrientation
     return incidentOrientationAxis;
 }
 
+std::vector<double> RadiationWithSpinAndPolarzation::getStokesParameter() {
+    return stokesParameter;
+}
+
 std::vector<double> RadiationWithSpinAndPolarzation::getStokesParameterNormalized() {
-    return stokesParameterNormalized;
+    return std::vector<double>({stokesParameter[0]/stokesParameter[0],stokesParameter[1]/stokesParameter[0],stokesParameter[2]/stokesParameter[0],stokesParameter[3]/stokesParameter[0]});
 }
 
 RadiationWithSpinAndPolarzation::~RadiationWithSpinAndPolarzation() {

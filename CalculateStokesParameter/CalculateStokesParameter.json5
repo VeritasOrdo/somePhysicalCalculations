@@ -22,5 +22,6 @@
         "end": 15330000,
         "points": 5000
     },
+    "normalize": false,
     "outputFile": "test.txt"
 }

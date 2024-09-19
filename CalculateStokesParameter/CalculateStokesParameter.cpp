@@ -39,14 +39,21 @@ int main(){
     double end = parameter["plot"]["end"];
     int points = parameter["plot"]["points"];
     double step = (end-begin)/points;
+    bool normalizeFlag = parameter["normalize"];
     std::string fileName = parameter["outputFile"];
     std::fstream file;
     file.open(fileName,std::ios::out);
     for(double photonEnergy=begin+step;photonEnergy<end;photonEnergy+=step){
         RadiationWithSpinAndPolarzation radiationWithSpinAndPolarzation(momentumZPrime,momentumXPrime,fieldParameter1,fieldParameter2,0,photonEnergy,azimuthalAngleOfEmission,spinIncidient,spinEmission,polarizationAlpha,polarizationBeta,axisOfIncidentAzimuthalAngleOfElectronSpin,axisOfIncidentPolarAngleOfElectronSpin,axisOfEmissionAzimuthalAngleOfElectronSpin,axisOfEmissionPolarAngleOfElectronSpin,rotationDirection1,rotationDirection2);
         radiationWithSpinAndPolarzation.calculateStokesParameter();
-        std::vector<double> stokesParameter = radiationWithSpinAndPolarzation.getStokesParameterNormalized();
-        file<<photonEnergy<<"\t"<<stokesParameter[0]<<"\t"<<stokesParameter[1]<<"\t"<<stokesParameter[2]<<"\t"<<stokesParameter[3]<<std::endl;
+        if(normalizeFlag){
+            std::vector<double> stokesParameterNormalized = radiationWithSpinAndPolarzation.getStokesParameterNormalized();
+            file<<photonEnergy<<"\t"<<stokesParameterNormalized[0]<<"\t"<<stokesParameterNormalized[1]<<"\t"<<stokesParameterNormalized[2]<<"\t"<<stokesParameterNormalized[3]<<std::endl;
+        }
+        else{
+            std::vector<double> stokesParameter = radiationWithSpinAndPolarzation.getStokesParameter();
+            file<<photonEnergy<<"\t"<<stokesParameter[0]<<"\t"<<stokesParameter[1]<<"\t"<<stokesParameter[2]<<"\t"<<stokesParameter[3]<<std::endl;
+        }
     }
     file.close();
     //RadiationWithSpinAndPolarzation radiationWithSpinAndPolarzation(momentumZPrime,momentumXPrime,fieldParameter1,fieldParameter2,0,1,azimuthalAngleOfEmission,spinIncidient,spinEmission,polarizationAlpha,polarizationBeta,axisOfIncidentAzimuthalAngleOfElectronSpin,axisOfIncidentPolarAngleOfElectronSpin,axisOfEmissionAzimuthalAngleOfElectronSpin,axisOfEmissionPolarAngleOfElectronSpin,rotationDirection1,rotationDirection2);
