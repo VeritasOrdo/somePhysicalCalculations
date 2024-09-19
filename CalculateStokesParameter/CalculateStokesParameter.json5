@@ -16,5 +16,11 @@
         "spin": 0.5,
         "polarAngle": 0.0,
         "azimuthalAngle": 0.0
-    }
+    },
+    "plot":{
+        "begin": 0,
+        "end": 15330000,
+        "points": 5000
+    },
+    "outputFile": "test.txt"
 }

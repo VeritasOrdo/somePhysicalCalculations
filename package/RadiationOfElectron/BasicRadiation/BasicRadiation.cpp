@@ -41,6 +41,7 @@ BasicRadiationOfElectronInCounterpropagatingLaser::BasicRadiationOfElectronInCou
     this->rotationDirection2 = rotationDirection2;
     this->rotationDirectionPlus = std::abs(this->rotationDirection1-this->rotationDirection2);
     this->rotationDirectionMinus = std::abs(this->rotationDirection1+this->rotationDirection2);
+    this->emissionMapIntensityList = {};
     std::cout << "the differential emission intensity has not been calculated yet" << std::endl;
     std::cout << "Please call the calculateDifferentialEmissionIntensity() method to calculate the differential emission intensity" << std::endl;
 }
@@ -310,6 +311,55 @@ void BasicRadiationOfElectronInCounterpropagatingLaser::calculateDifferentialEmi
     std::cout<<this->differentialEmissionIntensity<<std::endl;
 }
 
+void BasicRadiationOfElectronInCounterpropagatingLaser::calculateEmissionIntensityAndPolarization(){
+    std::vector<int> labelLimits = this->calculateLabelLimits();
+    int labelLeftLimit = labelLimits[0]+labelLimits[2];
+    int labelRightLimit = labelLimits[1]+labelLimits[2];
+    int label3Limit = labelLimits[2];
+    std::cout<<"labelLeftLimit: "<<labelLeftLimit<<std::endl;
+    std::cout<<"labelRightLimit: "<<labelRightLimit<<std::endl;
+    std::cout<<"label3Limit: "<<label3Limit<<std::endl;
+    long double time0 = std::chrono::duration_cast<std::chrono::nanoseconds>(std::chrono::system_clock::now().time_since_epoch()).count();
+    double sumOfSpectralComponentFour = 0;
+    double sumOfSpectralComponentTime = 0;
+    std::cout << "label left limit min: " << -std::min(std::max(labelLeftLimit/100,500),40000) << std::endl;
+    double fineStructureConstant = 1.0/137;
+    this->emissionMapIntensityList.resize((labelLeftLimit+std::min(std::max(labelLeftLimit/100,500),40000)+1)*(labelRightLimit+labelRightLimit+1));
+    std::cout<<"size: "<<this->emissionMapIntensityList.size()<<std::endl;
+    #pragma omp parallel for schedule(dynamic) reduction(+:sumOfSpectralComponentFour,sumOfSpectralComponentTime)
+    for(int labelLeft = -std::min(std::max(labelLeftLimit/100,500),40000);labelLeft<=labelLeftLimit;labelLeft++){
+        if(labelLeft%100==0){
+            std::cout<<"labelLeft: "<<labelLeft<<std::endl;
+        }
+        for(int labelRight = -labelRightLimit;labelRight<=labelRightLimit;labelRight++){
+            std::map<std::pair<int,int>,std::pair<double,double>> emissionMapIntensity={};
+            std::pair<int,int> labelPair = std::make_pair(labelLeft,labelRight);
+            std::vector<double> emissionPolarAngle = this->calculateEmissionPolarAngle(labelLeft,labelRight);
+            for(int emissionPolarAngleIndex=0;emissionPolarAngleIndex<emissionPolarAngle.size();emissionPolarAngleIndex++){
+                std::complex<double> spectralComponentT =0;
+                std::complex<double> spectralComponentX =0;
+                std::complex<double> spectralComponentY =0;
+                std::complex<double> spectralComponentZ =0;
+                for(int label3 = -label3Limit;label3<=label3Limit;label3++){
+                    std::vector<std::complex<double>> spectralComponent = this->SpectralComponent(labelLeft,labelRight,label3,emissionPolarAngle[emissionPolarAngleIndex]);
+                    spectralComponentT += spectralComponent[0];
+                    spectralComponentX += spectralComponent[1];
+                    spectralComponentY += spectralComponent[2];
+                    spectralComponentZ += spectralComponent[3];
+                }
+                double spectralComponentFour = std::abs(spectralComponentT)*std::abs(spectralComponentT)-std::abs(spectralComponentX)*std::abs(spectralComponentX)-std::abs(spectralComponentY)*std::abs(spectralComponentY)-std::abs(spectralComponentZ)*std::abs(spectralComponentZ);
+                double spectralComponentTime = std::abs(spectralComponentT)*std::abs(spectralComponentT);
+                double differentialEmissionIntensity = -((fineStructureConstant*electronMass*electronMass*photonEnergy)/(4*M_PI*this->getEnergy()*this->getEnergy()*this->getEnergy()*residualEnergy))*(this->getEnergy()*this->getEnergy()+residualEnergy*residualEnergy)*spectralComponentFour+((fineStructureConstant*electronMass*electronMass*electronMass*electronMass*photonEnergy*photonEnergy*photonEnergy)/(4*M_PI*this->getEnergy()*this->getEnergy()*this->getEnergy()*this->getEnergy()*this->getEnergy()*residualEnergy))*spectralComponentTime;
+                double emissionIntensity = differentialEmissionIntensity*std::abs(1/(this->getVelocityXPrime()*std::cos(this->emissionAzimuthalAngle)*(1/std::tan(emissionPolarAngle[emissionPolarAngleIndex]))-this->getVelocityZPrime()));
+                emissionMapIntensity[std::make_pair(labelLeft,labelRight)] = std::make_pair(emissionIntensity,emissionPolarAngle[emissionPolarAngleIndex]);
+                //std::cout<<"emissionMapIntensity: "<<emissionMapIntensity[std::make_pair(labelLeft,labelRight)].first<<std::endl;
+                this->emissionMapIntensityList[(labelLeft+std::min(std::max(labelLeftLimit/100,500),40000))*(labelRight+labelRightLimit+1)+labelRight+labelRightLimit] = emissionMapIntensity;
+            }
+        }
+    }
+}
+
+
 double BasicRadiationOfElectronInCounterpropagatingLaser::getPhotonEnergy() {
     return this->photonEnergy;
 }
@@ -328,6 +378,10 @@ double BasicRadiationOfElectronInCounterpropagatingLaser::getResidualEnergy() {
 
 double BasicRadiationOfElectronInCounterpropagatingLaser::getEnergyRatio() {
     return this->energyRatio;
+}
+
+std::vector<std::map<std::pair<int,int>,std::pair<double,double>>> BasicRadiationOfElectronInCounterpropagatingLaser::getEmissionMapIntensityList() {
+    return this->emissionMapIntensityList;
 }
 
 void BasicRadiationOfElectronInCounterpropagatingLaser::test() {

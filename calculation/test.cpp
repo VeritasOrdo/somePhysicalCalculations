@@ -102,7 +102,7 @@
     return 0;
 }*/
 
-int main(){
+/*int main(){
     double electronMass = 511000;
     double fieldParameter1 = 2;
     double fieldParameter2 = 0.1;
@@ -130,5 +130,40 @@ int main(){
     std::cout << "differentialEmissionIntensity: " << 2*M_PI*radiation << std::endl;
     //std::cout << "cosPI/2: " << std::cos(M_PI/2) << std::endl;
     //std::cout << "cosPI/2_2: " << std::cos(PI/2) << std::endl;
+    return 0;
+}*/
+
+int main(){
+    double electronMass = 511000;
+    double fieldParameter1 = 0.02;
+    double fieldParameter2 = 0.1;
+    double reducedMass = electronMass*std::sqrt(1+fieldParameter1*fieldParameter1+fieldParameter2*fieldParameter2);
+    double energyPrime = 30*electronMass;
+    double momentumXPrime = 0;
+    double momentumZPrime = std::sqrt(energyPrime*energyPrime-reducedMass*reducedMass-momentumXPrime*momentumXPrime);
+    double omega = 1.55;
+    double spinIncidient = 0.5;
+    double spinEmission = 0.5;
+    double polarizationAlpha = 0;
+    double polarizationBeta = 0;
+    double axisOfIncidentPolarAngleOfElectronSpin = 0;
+    double axisOfIncidentAzimuthalAngleOfElectronSpin = 0;
+    double axisOfEmissionPolarAngleOfElectronSpin = 0;
+    double axisOfEmissionAzimuthalAngleOfElectronSpin = 0;
+    double azimuthalAngleOfEmission = 0;
+    double photonEnergy = 5517.4;
+    BasicRadiationOfElectronInCounterpropagatingLaser radiationOfElectron(momentumZPrime,momentumXPrime,fieldParameter1,fieldParameter2,0,photonEnergy,azimuthalAngleOfEmission,1,1);
+    radiationOfElectron.calculateEmissionIntensityAndPolarization();
+    std::vector<std::map<std::pair<int,int>,std::pair<double,double>>> emissionIntensityAndPolarization = radiationOfElectron.getEmissionMapIntensityList();
+    std::fstream file;
+    std::cout<<"emissionIntensityAndPolarization.size(): "<<emissionIntensityAndPolarization.size()<<std::endl;
+    file.open("emissionIntensityAndPolarization.txt",std::ios::out);
+    for(int i=0;i<emissionIntensityAndPolarization.size();i++){
+        std::cout<<"i: "<<i<<std::endl;
+        for(auto it=emissionIntensityAndPolarization[i].begin();it!=emissionIntensityAndPolarization[i].end();it++){
+            file << it->first.first << "\t" << it->first.second << "\t" << it->second.first << "\t" << it->second.second << std::endl;
+        }
+    }
+    file.close();
     return 0;
 }

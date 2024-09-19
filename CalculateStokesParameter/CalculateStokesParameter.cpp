@@ -35,11 +35,13 @@ int main(){
     double axisOfEmissionPolarAngleOfElectronSpin = parameter["emission"]["polarAngle"];
     double axisOfEmissionAzimuthalAngleOfElectronSpin = parameter["emission"]["azimuthalAngle"];
     double azimuthalAngleOfEmission = parameter["azimuthalAngleOfEmission"];
-    double begin = 0;
-    double end = 6000;
-    double step = 1;
+    double begin = parameter["plot"]["begin"];
+    double end = parameter["plot"]["end"];
+    int points = parameter["plot"]["points"];
+    double step = (end-begin)/points;
+    std::string fileName = parameter["outputFile"];
     std::fstream file;
-    file.open("StokesParameter.txt",std::ios::out);
+    file.open(fileName,std::ios::out);
     for(double photonEnergy=begin+step;photonEnergy<end;photonEnergy+=step){
         RadiationWithSpinAndPolarzation radiationWithSpinAndPolarzation(momentumZPrime,momentumXPrime,fieldParameter1,fieldParameter2,0,photonEnergy,azimuthalAngleOfEmission,spinIncidient,spinEmission,polarizationAlpha,polarizationBeta,axisOfIncidentAzimuthalAngleOfElectronSpin,axisOfIncidentPolarAngleOfElectronSpin,axisOfEmissionAzimuthalAngleOfElectronSpin,axisOfEmissionPolarAngleOfElectronSpin,rotationDirection1,rotationDirection2);
         radiationWithSpinAndPolarzation.calculateStokesParameter();
