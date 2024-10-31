@@ -22,6 +22,7 @@ class RadiationWithSpinAndPolarzation : public BasicRadiationOfElectronInCounter
         //the value of the spin are 0.5 or -0.5
         void calculateDifferentialEmissionIntensity();
         void calculateStokesParameter();
+        std::vector<double> calculateSixTermsOfDifferentialEmissionIntensity();
         double getSpinIncident();
         double getSpinEmission();
         double getAxisOfIncidentAzimuthalAngleOfElectronSpin();

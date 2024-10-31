@@ -1,0 +1,33 @@
+{
+    "fieldParameter1": 2,
+    "fieldParameter2": 0.1,
+    "rotationDirection1": 1,
+    "rotationDirection2": 1,
+    "energyPrime": 15330000,
+    "momentumXPrime": 0.0,
+    "omega": 1.55,
+    "azimuthalAngleOfEmission": 0.0,
+    "useIncidentSpin": false,
+    "incident":{
+        "spin": 0.5,
+        "polarAngle": 0.0,
+        "azimuthalAngle": 0.0
+    },
+    "useEmissionSpin": false,
+    "emission":{
+        "spin": 0.5,
+        "polarAngle": 0.0,
+        "azimuthalAngle": 0.0
+    },
+    "usePolarization": false,
+    "polarization": {
+        "alpha": 0.0,
+        "beta": 0.0
+    },
+    "plot": {
+        "begin": 0,
+        "end": 6000,
+        "points": 5000
+    },
+    "outputFile": "30m_2_0.1_allFalse.txt"
+}
