@@ -3,7 +3,7 @@
 #include <omp.h>
 #include <fstream>  
 
-RadiationWithSpinAndPolarzation::RadiationWithSpinAndPolarzation(double momentumZPrime,double momentumXPrime,double fieldParameter1,double fieldParameter2,double properTime,double photonEnergy,double emissionAzimuthalAngle,double spinIncident,double spinEmission,double polarizationAlpha,double polarizationBeta,double axisOfIncidentAzimuthalAngleOfElectronSpin,double axisOfIncidentPolarAngleOfElectronSpin,double axisOfEmissionAzimuthalAngleOfElectronSpin,double axisOfEmissionPolarAngleOfElectronSpin,double rotationDirection1, double rotationDirection2) : BasicRadiationOfElectronInCounterpropagatingLaser(momentumZPrime,momentumXPrime,fieldParameter1,fieldParameter2,properTime,photonEnergy,emissionAzimuthalAngle,rotationDirection1,rotationDirection2) {
+RadiationWithSpinAndPolarzation::RadiationWithSpinAndPolarzation(double momentumZPrime,double momentumXPrime,double fieldParameter1,double fieldParameter2,double properTime,double photonEnergy,double emissionAzimuthalAngle,double spinIncident,double spinEmission,double polarizationAlpha,double polarizationBeta,double axisOfIncidentAzimuthalAngleOfElectronSpin,double axisOfIncidentPolarAngleOfElectronSpin,double axisOfEmissionAzimuthalAngleOfElectronSpin,double axisOfEmissionPolarAngleOfElectronSpin,double rotationDirection1, double rotationDirection2,double emissionPolarAngleMin,double emissionPolarAngleMax) : BasicRadiationOfElectronInCounterpropagatingLaser(momentumZPrime,momentumXPrime,fieldParameter1,fieldParameter2,properTime,photonEnergy,emissionAzimuthalAngle,rotationDirection1,rotationDirection2) {
     this->spinIncident = spinIncident;
     this->spinEmission = spinEmission;
     this->polarizationAlpha = polarizationAlpha;
@@ -16,6 +16,8 @@ RadiationWithSpinAndPolarzation::RadiationWithSpinAndPolarzation(double momentum
     this->emissionOrientationAxis = Dimension3Vector<double>(std::cos(axisOfEmissionAzimuthalAngleOfElectronSpin)*std::sin(axisOfEmissionPolarAngleOfElectronSpin),std::sin(axisOfEmissionAzimuthalAngleOfElectronSpin)*std::sin(axisOfEmissionPolarAngleOfElectronSpin),std::cos(axisOfEmissionPolarAngleOfElectronSpin));
     this->combinedIncidentOrientationAxis = incidentOrientationAxis*this->spinIncident*2.0;
     this->combinedEmissionOrientationAxis = emissionOrientationAxis*this->spinEmission*2.0;
+    this->emissionPolarAngleMax = emissionPolarAngleMax;
+    this->emissionPolarAngleMin = emissionPolarAngleMin;
     this->stokesParameter = {0,0,0,0};
 }
 
@@ -57,6 +59,9 @@ void RadiationWithSpinAndPolarzation::calculateDifferentialEmissionIntensity() {
             Dimension3Vector<std::complex<double>> sumOfComponentBY = Dimension3Vector<std::complex<double>>(0,0,0);
             for(int label3 = -label3Limit; label3 <=label3Limit; label3++) {
                 for(int labelOfEmissionPolarAngles = 0; labelOfEmissionPolarAngles < emissionPolarAngles.size(); labelOfEmissionPolarAngles++) {
+                    if(emissionPolarAngles[labelOfEmissionPolarAngles]<emissionPolarAngleMin||emissionPolarAngles[labelOfEmissionPolarAngles]>emissionPolarAngleMax){
+                        continue;
+                    }
                     std::vector<std::complex<double>> spectralComponent = SpectralComponent(labelLeft,labelRight,label3,emissionPolarAngles[labelOfEmissionPolarAngles]);
                     Dimension3Vector<std::complex<double>> spectralComponent3D = Dimension3Vector<std::complex<double>>(spectralComponent[1],spectralComponent[2],spectralComponent[3]);
                     Dimension3Vector<std::complex<double>> photonEmissionVector = Dimension3Vector<std::complex<double>>(std::sin(emissionPolarAngles[labelOfEmissionPolarAngles])*std::cos(this->getEmissionAzimuthalAngle()),std::sin(emissionPolarAngles[labelOfEmissionPolarAngles])*std::sin(this->getEmissionAzimuthalAngle()),std::cos(emissionPolarAngles[labelOfEmissionPolarAngles]));
@@ -371,7 +376,6 @@ std::vector<double> RadiationWithSpinAndPolarzation::calculateSixTermsOfDifferen
     double fineStructureConstant = 1.0/137;
     return {sixTermsOfDifferentialEmissionIntensity0,sixTermsOfDifferentialEmissionIntensity1,sixTermsOfDifferentialEmissionIntensity2,sixTermsOfDifferentialEmissionIntensity3,sixTermsOfDifferentialEmissionIntensity4,sixTermsOfDifferentialEmissionIntensity5};
 }
-
 
 double RadiationWithSpinAndPolarzation::getSpinIncident() {
     return spinIncident;

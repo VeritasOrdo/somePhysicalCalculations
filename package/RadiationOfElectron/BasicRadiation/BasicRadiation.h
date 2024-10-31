@@ -41,6 +41,7 @@ class BasicRadiationOfElectronInCounterpropagatingLaser: public ElectronInCounte
         double getDifferentialEmissionIntensity();
         double getResidualEnergy();
         double getEnergyRatio();
+        std::vector<double> fourAmplitudesOfDifferentialEmissionIntensity();
         std::vector<std::map<std::pair<int,int>,std::pair<double,double>>> getEmissionMapIntensityList();
         std::vector<int> calculateLabelLimits();
         std::vector<double> calculateEmissionPolarAngle(int labelLeft, int labelRight);

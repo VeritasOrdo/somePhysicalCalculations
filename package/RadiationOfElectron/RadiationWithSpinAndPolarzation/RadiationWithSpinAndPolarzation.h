@@ -8,6 +8,8 @@ class RadiationWithSpinAndPolarzation : public BasicRadiationOfElectronInCounter
         double spinEmission;
         double polarizationAlpha;
         double polarizationBeta;
+        double emissionPolarAngleMin;
+        double emissionPolarAngleMax;
         double axisOfIncidentAzimuthalAngleOfElectronSpin;
         double axisOfIncidentPolarAngleOfElectronSpin;
         double axisOfEmissionAzimuthalAngleOfElectronSpin;
@@ -18,7 +20,7 @@ class RadiationWithSpinAndPolarzation : public BasicRadiationOfElectronInCounter
         Dimension3Vector<double> combinedEmissionOrientationAxis;
         std::vector<double> stokesParameter;
     public:
-        RadiationWithSpinAndPolarzation(double momentumZPrime,double momentumXPrime,double fieldParameter1,double fieldParameter2,double properTime,double photonEnergy,double emissionAzimuthalAngle,double spinIncident,double spinEmission,double polarizationAlpha,double polarzationBeta,double axisOfIncidentAzimuthalAngleOfElectronSpin,double axisOfIncidentPolarAngleOfElectronSpin,double axisOfEmissionAzimuthalAngleOfElectronSpin,double axisOfEmissionPolarAngleOfElectronSpin, double rotationDirection1, double rotationDirection2);
+        RadiationWithSpinAndPolarzation(double momentumZPrime,double momentumXPrime,double fieldParameter1,double fieldParameter2,double properTime,double photonEnergy,double emissionAzimuthalAngle,double spinIncident,double spinEmission,double polarizationAlpha,double polarzationBeta,double axisOfIncidentAzimuthalAngleOfElectronSpin,double axisOfIncidentPolarAngleOfElectronSpin,double axisOfEmissionAzimuthalAngleOfElectronSpin,double axisOfEmissionPolarAngleOfElectronSpin, double rotationDirection1, double rotationDirection2,double emissionPolarAngleMin,double emissionPolarAngleMax);
         //the value of the spin are 0.5 or -0.5
         void calculateDifferentialEmissionIntensity();
         void calculateStokesParameter();

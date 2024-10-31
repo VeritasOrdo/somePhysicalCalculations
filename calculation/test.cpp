@@ -102,12 +102,12 @@
     return 0;
 }*/
 
-/*int main(){
+int main(){
     double electronMass = 511000;
-    double fieldParameter1 = 2;
+    double fieldParameter1 = 1.6;
     double fieldParameter2 = 0.1;
     double reducedMass = electronMass*std::sqrt(1+fieldParameter1*fieldParameter1+fieldParameter2*fieldParameter2);
-    double energyPrime = 30*electronMass;
+    double energyPrime = 15330000;
     double momentumXPrime = 0;
     double momentumZPrime = std::sqrt(energyPrime*energyPrime-reducedMass*reducedMass-momentumXPrime*momentumXPrime);
     double omega = 1.55;
@@ -120,7 +120,7 @@
     double axisOfEmissionPolarAngleOfElectronSpin = 0;
     double axisOfEmissionAzimuthalAngleOfElectronSpin = 0;
     double azimuthalAngleOfEmission = 0;
-    double photonEnergy = 5090;
+    double photonEnergy = 3032;
     //RadiationWithSpinAndPolarzation radiationWithSpinAndPolarzation(momentumZPrime,momentumXPrime,fieldParameter1,fieldParameter2,0,photonEnergy,azimuthalAngleOfEmission,spinIncidient,spinEmission,polarizationAlpha,polarizationBeta,axisOfIncidentAzimuthalAngleOfElectronSpin,axisOfIncidentPolarAngleOfElectronSpin,axisOfEmissionAzimuthalAngleOfElectronSpin,axisOfEmissionPolarAngleOfElectronSpin,1,1);
     //radiationWithSpinAndPolarzation.calculateDifferentialEmissionIntensity();
     BasicRadiationOfElectronInCounterpropagatingLaser radiationOfElectron(momentumZPrime,momentumXPrime,fieldParameter1,fieldParameter2,0,photonEnergy,azimuthalAngleOfEmission,1,1);
@@ -131,9 +131,9 @@
     //std::cout << "cosPI/2: " << std::cos(M_PI/2) << std::endl;
     //std::cout << "cosPI/2_2: " << std::cos(PI/2) << std::endl;
     return 0;
-}*/
+}
 
-int main(){
+/*int main(){
     double electronMass = 511000;
     double fieldParameter1 = 0.02;
     double fieldParameter2 = 0.1;
@@ -166,4 +166,4 @@ int main(){
     }
     file.close();
     return 0;
-}
+}*/
