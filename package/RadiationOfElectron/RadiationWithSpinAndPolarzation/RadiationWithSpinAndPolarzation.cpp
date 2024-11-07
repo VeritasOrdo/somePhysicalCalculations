@@ -41,7 +41,8 @@ void RadiationWithSpinAndPolarzation::calculateDifferentialEmissionIntensity() {
     long double time0 = std::chrono::duration_cast<std::chrono::nanoseconds>(std::chrono::system_clock::now().time_since_epoch()).count();
     std::cout<<"max thread: "<<omp_get_max_threads()<<std::endl;
     std::cout << "label left limit min: " << -std::min(std::max(labelLeftLimit/100,500),40000) << std::endl;
-    #pragma omp parallel for schedule(dynamic) reduction(+:sumOfSpectralComponent) 
+    int count = 0;
+    #pragma omp parallel for schedule(dynamic) reduction(+:sumOfSpectralComponent) reduction(+:count)
     for(int labelLeft = -std::min(std::max(labelLeftLimit/100,500),40000); labelLeft <=labelLeftLimit; labelLeft++) {
         if(labelLeft%100==0){
             std::cout<<"SL: "<<labelLeft<<std::endl;
@@ -59,9 +60,10 @@ void RadiationWithSpinAndPolarzation::calculateDifferentialEmissionIntensity() {
             Dimension3Vector<std::complex<double>> sumOfComponentBY = Dimension3Vector<std::complex<double>>(0,0,0);
             for(int label3 = -label3Limit; label3 <=label3Limit; label3++) {
                 for(int labelOfEmissionPolarAngles = 0; labelOfEmissionPolarAngles < emissionPolarAngles.size(); labelOfEmissionPolarAngles++) {
-                    if(emissionPolarAngles[labelOfEmissionPolarAngles]<emissionPolarAngleMin||emissionPolarAngles[labelOfEmissionPolarAngles]>emissionPolarAngleMax){
+                    if((emissionPolarAngles[labelOfEmissionPolarAngles]<emissionPolarAngleMin)||(emissionPolarAngles[labelOfEmissionPolarAngles]>emissionPolarAngleMax)){
                         continue;
                     }
+                    count++;
                     std::vector<std::complex<double>> spectralComponent = SpectralComponent(labelLeft,labelRight,label3,emissionPolarAngles[labelOfEmissionPolarAngles]);
                     Dimension3Vector<std::complex<double>> spectralComponent3D = Dimension3Vector<std::complex<double>>(spectralComponent[1],spectralComponent[2],spectralComponent[3]);
                     Dimension3Vector<std::complex<double>> photonEmissionVector = Dimension3Vector<std::complex<double>>(std::sin(emissionPolarAngles[labelOfEmissionPolarAngles])*std::cos(this->getEmissionAzimuthalAngle()),std::sin(emissionPolarAngles[labelOfEmissionPolarAngles])*std::sin(this->getEmissionAzimuthalAngle()),std::cos(emissionPolarAngles[labelOfEmissionPolarAngles]));
@@ -133,6 +135,7 @@ void RadiationWithSpinAndPolarzation::calculateDifferentialEmissionIntensity() {
             ).real();
         }
     }
+    std::cout<<"count: "<<count<<std::endl;
     // theta+5/gamma
     //file.close();
     std::cout<<"sumOfSpectralComponentReal: "<<sumOfSpectralComponent<<std::endl;
@@ -142,7 +145,7 @@ void RadiationWithSpinAndPolarzation::calculateDifferentialEmissionIntensity() {
     std::cout << "Time: " << (time1-time0)/1000000000 << " seconds" << std::endl;
     double fineStructureConstant = 1.0/137;
     this->setDifferentialEmissionIntensity(((fineStructureConstant*electronMass*electronMass*this->getPhotonEnergy()*this->getResidualEnergy())/(2.0*M_PI*this->getEnergy()*this->getEnergy()*this->getEnergy()))*sumOfSpectralComponent);
-    //std::cout<<"differentialEmissionIntensity: "<<this->getDifferentialEmissionIntensity()<<std::endl;
+    std::cout<<"differentialEmissionIntensity: "<<this->getDifferentialEmissionIntensity()<<std::endl;
     //std::cout<<"differentialEmissionIntensityTest: "<<((fineStructureConstant*electronMass*electronMass*this->getPhotonEnergy()*this->getResidualEnergy())/(2.0*M_PI*this->getEnergy()*this->getEnergy()*this->getEnergy()))*sumOfSpectralComponentTest<<std::endl;
 }
 
