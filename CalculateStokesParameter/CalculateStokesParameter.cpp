@@ -41,10 +41,12 @@ int main(){
     double step = (end-begin)/points;
     bool normalizeFlag = parameter["normalize"];
     std::string fileName = parameter["outputFile"];
+    double emissionPolarAngleLimitMin = parameter["emissionPolarAngleLimit"]["min"];
+    double emissionPolarAngleLimitMax = parameter["emissionPolarAngleLimit"]["max"];
     std::fstream file;
     file.open(fileName,std::ios::out);
     for(double photonEnergy=begin+step;photonEnergy<end;photonEnergy+=step){
-        RadiationWithSpinAndPolarzation radiationWithSpinAndPolarzation(momentumZPrime,momentumXPrime,fieldParameter1,fieldParameter2,0,photonEnergy,azimuthalAngleOfEmission,spinIncidient,spinEmission,polarizationAlpha,polarizationBeta,axisOfIncidentAzimuthalAngleOfElectronSpin,axisOfIncidentPolarAngleOfElectronSpin,axisOfEmissionAzimuthalAngleOfElectronSpin,axisOfEmissionPolarAngleOfElectronSpin,rotationDirection1,rotationDirection2);
+        RadiationWithSpinAndPolarzation radiationWithSpinAndPolarzation(momentumZPrime,momentumXPrime,fieldParameter1,fieldParameter2,0,photonEnergy,azimuthalAngleOfEmission,spinIncidient,spinEmission,polarizationAlpha,polarizationBeta,axisOfIncidentAzimuthalAngleOfElectronSpin,axisOfIncidentPolarAngleOfElectronSpin,axisOfEmissionAzimuthalAngleOfElectronSpin,axisOfEmissionPolarAngleOfElectronSpin,rotationDirection1,rotationDirection2,emissionPolarAngleLimitMin,emissionPolarAngleLimitMax);
         radiationWithSpinAndPolarzation.calculateStokesParameter();
         if(normalizeFlag){
             std::vector<double> stokesParameterNormalized = radiationWithSpinAndPolarzation.getStokesParameterNormalized();

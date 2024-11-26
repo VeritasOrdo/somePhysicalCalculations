@@ -187,6 +187,9 @@ void RadiationWithSpinAndPolarzation::calculateStokesParameter() {
             Dimension3Vector<std::complex<double>> sumOfComponentBY = Dimension3Vector<std::complex<double>>(0,0,0);
             for(int label3 = -label3Limit; label3 <=label3Limit; label3++) {
                 for(int labelOfEmissionPolarAngles = 0; labelOfEmissionPolarAngles < emissionPolarAngles.size(); labelOfEmissionPolarAngles++) {
+                    if((emissionPolarAngles[labelOfEmissionPolarAngles]<emissionPolarAngleMin)||(emissionPolarAngles[labelOfEmissionPolarAngles]>emissionPolarAngleMax)){
+                        continue;
+                    }
                     std::vector<std::complex<double>> spectralComponent = SpectralComponent(labelLeft,labelRight,label3,emissionPolarAngles[labelOfEmissionPolarAngles]);
                     Dimension3Vector<std::complex<double>> spectralComponent3D = Dimension3Vector<std::complex<double>>(spectralComponent[1],spectralComponent[2],spectralComponent[3]);
                     Dimension3Vector<std::complex<double>> photonEmissionVector = Dimension3Vector<std::complex<double>>(std::sin(emissionPolarAngles[labelOfEmissionPolarAngles])*std::cos(this->getEmissionAzimuthalAngle()),std::sin(emissionPolarAngles[labelOfEmissionPolarAngles])*std::sin(this->getEmissionAzimuthalAngle()),std::cos(emissionPolarAngles[labelOfEmissionPolarAngles]));
