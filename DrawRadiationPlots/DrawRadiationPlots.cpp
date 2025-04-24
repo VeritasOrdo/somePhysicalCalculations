@@ -27,7 +27,6 @@ int main(){
     double momentumXPrime = parameter["momentumXPrime"];
     double momentumZPrime = std::sqrt(energyPrime*energyPrime-reducedMass*reducedMass-momentumXPrime*momentumXPrime);
     std::cout<<"momentumZPrime: "<<momentumZPrime<<std::endl;
-    std::cin.get();
     double omega = parameter["omega"];
     double spinIncidient = parameter["incident"]["spin"];
     double spinEmission = parameter["emission"]["spin"];
