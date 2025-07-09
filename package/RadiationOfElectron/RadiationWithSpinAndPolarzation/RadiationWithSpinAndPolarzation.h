@@ -23,6 +23,7 @@ class RadiationWithSpinAndPolarzation : public BasicRadiationOfElectronInCounter
         RadiationWithSpinAndPolarzation(double momentumZPrime,double momentumXPrime,double fieldParameter1,double fieldParameter2,double properTime,double photonEnergy,double emissionAzimuthalAngle,double spinIncident,double spinEmission,double polarizationAlpha,double polarzationBeta,double axisOfIncidentAzimuthalAngleOfElectronSpin,double axisOfIncidentPolarAngleOfElectronSpin,double axisOfEmissionAzimuthalAngleOfElectronSpin,double axisOfEmissionPolarAngleOfElectronSpin, double rotationDirection1, double rotationDirection2,double emissionPolarAngleMin,double emissionPolarAngleMax);
         //the value of the spin are 0.5 or -0.5
         void calculateDifferentialEmissionIntensity();
+        void calculateDifferentialEmissionIntensityWithDoubledLabel();
         void calculateStokesParameter();
         std::vector<double> calculateSixTermsOfDifferentialEmissionIntensity();
         double getSpinIncident();
