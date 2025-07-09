@@ -21,6 +21,16 @@ void my_gsl_error_handler(const char * reason, const char * file, int line, int 
 
 double myBesselFunction(int label,double argument) {
     gsl_set_error_handler(&my_gsl_error_handler);
+
+    // 特殊情况处理：当argument为0时
+    if(std::abs(argument) < 1e-300) {
+        if(label == 0) {
+            return 1.0;  // J_0(0) = 1
+        } else {
+            return 0.0;  // J_n(0) = 0 for n != 0
+        }
+    }
+    
     if(std::abs(argument)<1000&&std::abs(label)<1000){
         return gsl_sf_bessel_Jn(label,argument);
     }

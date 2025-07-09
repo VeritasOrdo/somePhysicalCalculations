@@ -1,6 +1,6 @@
 {
-    "fieldParameter1": 2,
-    "fieldParameter2": 0.1,
+    "fieldParameter1": 1e-300,
+    "fieldParameter2": 1,
     "rotationDirection1": 1,
     "rotationDirection2": 1,
     "energyPrime": 15330000,
@@ -19,19 +19,19 @@
         "polarAngle": 0.0,
         "azimuthalAngle": 0.0
     },
-    "usePolarization": true,
+    "usePolarization": false,
     "polarization": {
         "alpha": 0.0,
         "beta": 0.0
     },
     "plot": {
-        "begin": 5000,
-        "end": 6000,
-        "points": 1
+        "begin": 0,
+        "end": 4000,
+        "points": 8000
     },
     "emissionPolarAngleLimit":{
         "min": 0.0,
         "max": 1.0
     },
-    "outputFile": "30m_2_0.1.txt"
+    "outputFile": "30m_0_1_0_4000_1.txt"
 }
