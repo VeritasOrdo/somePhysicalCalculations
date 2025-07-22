@@ -70,11 +70,11 @@ std::vector<double> BasicRadiationOfElectronInCounterpropagatingLaser::calculate
     double emissionPolarAngle1 = std::acos(
         (this->getVelocityZPrime()*(1-rho)+this->getVelocityXPrime()*std::cos(this->emissionAzimuthalAngle)*std::sqrt(delta))/
         (this->getVelocityZPrime()*this->getVelocityZPrime()+this->getVelocityXPrime()*this->getVelocityXPrime()*std::cos(this->emissionAzimuthalAngle)*std::cos(this->emissionAzimuthalAngle))
-    );
-    double emissionPolarAngle2 = std::acos(
+    ); //+
+    /*double emissionPolarAngle2 = std::acos(
         (this->getVelocityZPrime()*(1-rho)-this->getVelocityXPrime()*std::cos(this->emissionAzimuthalAngle)*std::sqrt(delta))/
         (this->getVelocityZPrime()*this->getVelocityZPrime()+this->getVelocityXPrime()*this->getVelocityXPrime()*std::cos(this->emissionAzimuthalAngle)*std::cos(this->emissionAzimuthalAngle))
-    );
+    ); *///-
     if(std::abs(this->getVelocityXPrime())<1e-300){
         //std::cout<<"here!"<<std::endl;
         return {emissionPolarAngle1};
@@ -82,9 +82,9 @@ std::vector<double> BasicRadiationOfElectronInCounterpropagatingLaser::calculate
     if(std::sin(emissionPolarAngle1)>0){
         emissionPolarAngle.push_back(emissionPolarAngle1);
     }
-    if(std::sin(emissionPolarAngle2)>0){
+    /*if(std::sin(emissionPolarAngle2)>0){
         emissionPolarAngle.push_back(emissionPolarAngle2);
-    }
+    }*/
     return emissionPolarAngle;
 }
 
