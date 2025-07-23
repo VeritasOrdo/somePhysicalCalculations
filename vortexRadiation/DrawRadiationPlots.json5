@@ -1,0 +1,38 @@
+{
+    "fieldParameter1": 1e-300,
+    "fieldParameter2": 1,
+    "rotationDirection1": 1,
+    "rotationDirection2": 1,
+    "energyPrime": 1000000000,
+    "momentumXPrime": 0.0,
+    "omega": 1.55,
+    "azimuthalAngleOfEmission": 0.0,
+    "useIncidentSpin": true,
+    "incident":{
+        "spin": 0.5,
+        "polarAngle": 0.0,
+        "azimuthalAngle": 0.0
+    },
+    "useEmissionSpin": true,
+    "emission":{
+        "spin": 0.5,
+        "polarAngle": 0.0,
+        "azimuthalAngle": 0.0
+    },
+    "usePolarization": true,
+    "vortex": {
+        "polarizationParameter": 1.0,
+        "angularQuantumNumber": 1.0,
+        "divisionsOfAzimuthalAngle": 2000
+    },
+    "plot": {
+        "begin": 1e-300,
+        "end": 30000000,
+        "points": 5000
+    },
+    "emissionPolarAngleLimit":{
+        "min": 0.35,
+        "max": 0.351
+    },
+    "outputFile": "1G_1.txt"
+}
