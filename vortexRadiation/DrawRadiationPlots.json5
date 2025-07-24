@@ -26,12 +26,12 @@
         "divisionsOfAzimuthalAngle": 2000
     },
     "plot": {
-        "begin": 1e-300,
+        "begin": 0,
         "end": 30000000,
         "points": 5000
     },
     "emissionPolarAngleLimit":{
-        "min": 0.35,
+        "min": 0.349,
         "max": 0.351
     },
     "outputFile": "1G_1.txt"
