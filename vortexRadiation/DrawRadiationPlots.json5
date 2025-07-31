@@ -22,17 +22,17 @@
     "usePolarization": true,
     "vortex": {
         "polarizationParameter": 1.0,
-        "angularQuantumNumber": 1.0,
+        "angularQuantumNumber": 2.0,
         "divisionsOfAzimuthalAngle": 2000
     },
     "plot": {
-        "begin": 0,
+        "begin": 1e-300,
         "end": 30000000,
         "points": 5000
     },
     "emissionPolarAngleLimit":{
-        "min": 0.349,
-        "max": 0.351
+        "min": 0,
+        "max": 0.1
     },
-    "outputFile": "1G_1.txt"
+    "outputFile": "1G_2_0_0.1_2000div.txt"
 }

@@ -363,9 +363,9 @@ void RadiationWithSpinAndPolarzation::calculateVortexDifferentialEmissionIntensi
                     )
                 );
                 std::complex<double> spectralComponentAmplitude = sumOfComponentA*componentASpinCoefficient+sumOfComponentB*componentBSpinCoefficient*std::complex<double>(0,1);
-                integralOfSpectralComponent += spectralComponentAmplitude*std::pow(std::complex<double>(0,1), angularQuantumNumber)*std::exp(std::complex<double>(0,-1)*angularQuantumNumber*azimuthalAngle)*(1.0/std::pow(std::sqrt(2*M_PI),3))*std::sqrt(this->getPhotonEnergy()*std::sin(polarAngle))*azimuthalAngleStep;
-                sumOfSpectralComponent += std::norm(integralOfSpectralComponent);
+                integralOfSpectralComponent += spectralComponentAmplitude*std::pow(std::complex<double>(0,1), angularQuantumNumber)*std::exp(std::complex<double>(0,-1)*angularQuantumNumber*azimuthalAngle)*(1.0/std::pow(std::sqrt(2*M_PI),3))*std::sqrt(this->getPhotonEnergy()*std::sin(polarAngle))*azimuthalAngleStep;         
             }
+            sumOfSpectralComponent += std::norm(integralOfSpectralComponent);
         }
     }
     std::cout<<"sumOfSpectralComponentReal: "<<sumOfSpectralComponent<<std::endl;
