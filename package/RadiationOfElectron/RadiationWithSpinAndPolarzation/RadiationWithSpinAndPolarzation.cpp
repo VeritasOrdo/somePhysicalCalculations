@@ -374,7 +374,7 @@ void RadiationWithSpinAndPolarzation::calculateVortexDifferentialEmissionIntensi
     long double time1 = std::chrono::duration_cast<std::chrono::nanoseconds>(std::chrono::system_clock::now().time_since_epoch()).count();
     std::cout << "Time: " << (time1-time0)/1000000000 << " seconds" << std::endl;
     double fineStructureConstant = 1.0/137;
-    this->setDifferentialEmissionIntensity(((fineStructureConstant*electronMass*electronMass*this->getResidualEnergy())/(2.0*M_PI*this->getEnergy()*this->getEnergy()*this->getEnergy()))*sumOfSpectralComponent);
+    this->setDifferentialEmissionIntensity(((fineStructureConstant*electronMass*electronMass*this->getPhotonEnergy()*this->getResidualEnergy())/(2.0*M_PI*this->getEnergy()*this->getEnergy()*this->getEnergy()))*sumOfSpectralComponent);
     std::cout<<"differentialEmissionIntensity: "<<this->getDifferentialEmissionIntensity()<<std::endl;
 }
 
