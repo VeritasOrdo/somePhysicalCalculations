@@ -293,19 +293,25 @@ void RadiationWithSpinAndPolarzation::calculateVortexDifferentialEmissionIntensi
         for(int labelRight = -labelRightLimit; labelRight <=labelRightLimit; labelRight++) {
             std::vector<double> emissionPolarAngles = calculateEmissionPolarAngle(labelLeft,labelRight);
             std::complex<double> integralOfSpectralComponent = 0;
+            if(emissionPolarAngles.empty()){
+                continue;
+            }
+            double polarAngle = emissionPolarAngles[0];
+            if((polarAngle<emissionPolarAngleMin)||(polarAngle>emissionPolarAngleMax)){ 
+                continue;
+            }
+            std::vector<std::vector<std::complex<double>>> spectralComponentsList;
+            spectralComponentsList.reserve(label3Limit*2+1);
+            for(int label3 = -label3Limit; label3 <=label3Limit; label3++) {
+                std::vector<std::complex<double>> spectralComponent = SpectralComponent(labelLeft,labelRight,label3,polarAngle);
+                spectralComponentsList.push_back(spectralComponent);
+            }
             for(int azimuthalAngleLabel = 0; azimuthalAngleLabel < azimuthalAngleDivisions; azimuthalAngleLabel++) {
                 double azimuthalAngle = azimuthalAngleLabel * azimuthalAngleStep;
                 std::complex<double> sumOfComponentA=0;
                 Dimension3Vector<std::complex<double>> sumOfComponentB = Dimension3Vector<std::complex<double>>(0,0,0);
-                if(emissionPolarAngles.empty()){
-                    continue;
-                }
-                double polarAngle = emissionPolarAngles[0];
-                if((polarAngle<emissionPolarAngleMin)||(polarAngle>emissionPolarAngleMax)){ 
-                    continue;
-                }
                 for(int label3 = -label3Limit; label3 <=label3Limit; label3++) {
-                    std::vector<std::complex<double>> spectralComponent = SpectralComponent(labelLeft,labelRight,label3,polarAngle);
+                    std::vector<std::complex<double>> spectralComponent = spectralComponentsList[label3 + label3Limit];
                     Dimension3Vector<std::complex<double>> spectralComponent3D = Dimension3Vector<std::complex<double>>(spectralComponent[1],spectralComponent[2],spectralComponent[3]);
                     Dimension3Vector<std::complex<double>> photonEmissionVector = Dimension3Vector<std::complex<double>>(std::sin(polarAngle)*std::cos(azimuthalAngle),std::sin(polarAngle)*std::sin(azimuthalAngle),std::cos(polarAngle));
                     std::complex<double> I = std::complex<double>(0, 1);
