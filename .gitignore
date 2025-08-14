@@ -1,0 +1,12 @@
+# all the txt
+*.txt
+
+# all the log
+*.log
+
+# all the compiled files created by the cmake
+*.cmake
+CMakeFiles/
+Makefile
+CMakeCache.txt
+cmake_install.cmake

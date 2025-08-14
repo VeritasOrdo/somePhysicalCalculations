@@ -30,7 +30,6 @@ class BasicRadiationOfElectronInCounterpropagatingLaser: public ElectronInCounte
         double auxiliaryAngle1(double emissionPolarAngle);
         double auxiliaryAngle2(double emissionPolarAngle);
     protected:
-        
     public:
         void setDifferentialEmissionIntensity(double differentialEmissionIntensity);
         BasicRadiationOfElectronInCounterpropagatingLaser(double momentumZPrime,double momentumXPrime,double fieldParameter1,double fieldParameter2,double properTime,double photonEnergy,double emissionAzimuthalAngle,double rotationDirection1,double rotationDirection2);
@@ -42,6 +41,7 @@ class BasicRadiationOfElectronInCounterpropagatingLaser: public ElectronInCounte
         double getDifferentialEmissionIntensity();
         double getResidualEnergy();
         double getEnergyRatio();
+        void setEmissionAzimuthalAngle(double emissionAzimuthalAngle);
         std::vector<double> fourAmplitudesOfDifferentialEmissionIntensity();
         std::vector<std::map<std::pair<int,int>,std::pair<double,double>>> getEmissionMapIntensityList();
         std::vector<int> calculateLabelLimits();

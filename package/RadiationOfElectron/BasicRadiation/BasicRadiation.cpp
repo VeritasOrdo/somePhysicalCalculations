@@ -462,6 +462,10 @@ double BasicRadiationOfElectronInCounterpropagatingLaser::getEnergyRatio() {
     return this->energyRatio;
 }
 
+void BasicRadiationOfElectronInCounterpropagatingLaser::setEmissionAzimuthalAngle(double emissionAzimuthalAngle) {
+    this->emissionAzimuthalAngle = emissionAzimuthalAngle;
+}
+
 std::vector<double> BasicRadiationOfElectronInCounterpropagatingLaser::fourAmplitudesOfDifferentialEmissionIntensity() {
     std::vector<int> labelLimits = this->calculateLabelLimits();
     int labelLeftLimit = labelLimits[0]+labelLimits[2];
