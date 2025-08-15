@@ -285,9 +285,9 @@ void RadiationWithSpinAndPolarzation::calculateVortexDifferentialEmissionIntensi
     std::cout<<"max thread: "<<omp_get_max_threads()<<std::endl;
     std::cout << "label left limit min: " << -std::min(std::max(labelLeftLimit/100,500),40000) << std::endl;
     double azimuthalAngleStep = 2*M_PI/azimuthalAngleDivisions;
-    //#pragma omp parallel for schedule(dynamic) reduction(+:sumOfSpectralComponent)
-    for(int labelLeft = 0; labelLeft <=labelLeftLimit; labelLeft++){
-    //for(int labelLeft = -std::min(std::max(labelLeftLimit/100,500),40000); labelLeft <=labelLeftLimit; labelLeft++){
+    #pragma omp parallel for schedule(dynamic) reduction(+:sumOfSpectralComponent)
+    //for(int labelLeft = 0; labelLeft <=labelLeftLimit; labelLeft++){
+    for(int labelLeft = -std::min(std::max(labelLeftLimit/100,500),40000); labelLeft <=labelLeftLimit; labelLeft++){
         if(labelLeft%100==0){
             #pragma omp critical
             {
@@ -313,7 +313,7 @@ void RadiationWithSpinAndPolarzation::calculateVortexDifferentialEmissionIntensi
                 Dimension3Vector<std::complex<double>> sumOfComponentB = Dimension3Vector<std::complex<double>>(0,0,0);
             
                 // 使用临界区保护状态修改和SpectralComponent调用
-                //#pragma omp critical
+                #pragma omp critical
                 {
                     this->setEmissionAzimuthalAngle(azimuthalAngle);
                     
