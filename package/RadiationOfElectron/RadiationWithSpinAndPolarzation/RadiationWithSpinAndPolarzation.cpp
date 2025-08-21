@@ -272,7 +272,7 @@ void RadiationWithSpinAndPolarzation::calculateDifferentialEmissionIntensityWith
     //std::cout<<"differentialEmissionIntensityTest: "<<((fineStructureConstant*electronMass*electronMass*this->getPhotonEnergy()*this->getResidualEnergy())/(2.0*M_PI*this->getEnergy()*this->getEnergy()*this->getEnergy()))*sumOfSpectralComponentTest<<std::endl;
 }
 
-void RadiationWithSpinAndPolarzation::calculateVortexDifferentialEmissionIntensity(double angularQuantumNumber, double polarizationParameter, size_t azimuthalAngleDivisions){
+void RadiationWithSpinAndPolarzation::calculateVortexDifferentialEmissionIntensity(double angularQuantumNumber, double polarizationParameter, size_t azimuthalAngleDivisions, double emissionPolarAngle, double nForSinc){
     std::vector<int> labelLimits = calculateLabelLimits();
     int labelLeftLimit = labelLimits[0]+labelLimits[2];
     int labelRightLimit = labelLimits[1]+labelLimits[2];
@@ -285,6 +285,7 @@ void RadiationWithSpinAndPolarzation::calculateVortexDifferentialEmissionIntensi
     std::cout<<"max thread: "<<omp_get_max_threads()<<std::endl;
     std::cout << "label left limit min: " << -std::min(std::max(labelLeftLimit/100,500),40000) << std::endl;
     double azimuthalAngleStep = 2*M_PI/azimuthalAngleDivisions;
+    double angleRelatedCoeffcient = ((this->getPhotonEnergy()/(this->getEnergy()-this->getPhotonEnergy()))*this->getEnergy()*this->getEnergy()/electronMass)*(1-this->getVelocityZPrime()*std::cos(emissionPolarAngle));
     #pragma omp parallel for schedule(dynamic) reduction(+:sumOfSpectralComponent)
     //for(int labelLeft = 0; labelLeft <=labelLeftLimit; labelLeft++){
     for(int labelLeft = -std::min(std::max(labelLeftLimit/100,500),40000); labelLeft <=labelLeftLimit; labelLeft++){
@@ -296,15 +297,7 @@ void RadiationWithSpinAndPolarzation::calculateVortexDifferentialEmissionIntensi
         }
         
         for(int labelRight = -labelRightLimit; labelRight <=labelRightLimit; labelRight++) {
-            std::vector<double> emissionPolarAngles = calculateEmissionPolarAngle(labelLeft,labelRight);
             std::complex<double> integralOfSpectralComponent = 0;
-            if(emissionPolarAngles.empty()){
-                continue;
-            }
-            double polarAngle = emissionPolarAngles[0];
-            if((polarAngle<emissionPolarAngleMin)||(polarAngle>emissionPolarAngleMax)){ 
-                continue;
-            }
         
             for(int azimuthalAngleLabel = 0; azimuthalAngleLabel < azimuthalAngleDivisions; azimuthalAngleLabel++) {
                 double azimuthalAngle = azimuthalAngleLabel * azimuthalAngleStep;
@@ -318,17 +311,17 @@ void RadiationWithSpinAndPolarzation::calculateVortexDifferentialEmissionIntensi
                     this->setEmissionAzimuthalAngle(azimuthalAngle);
                     
                     for(int label3 = -label3Limit; label3 <=label3Limit; label3++) {
-                        std::vector<std::complex<double>> spectralComponent = SpectralComponent(labelLeft,labelRight,label3,polarAngle);
+                        std::vector<std::complex<double>> spectralComponent = SpectralComponent(labelLeft,labelRight,label3,emissionPolarAngle);
                         Dimension3Vector<std::complex<double>> spectralComponent3D = Dimension3Vector<std::complex<double>>(spectralComponent[1],spectralComponent[2],spectralComponent[3]);
-                        Dimension3Vector<std::complex<double>> photonEmissionVector = Dimension3Vector<std::complex<double>>(std::sin(polarAngle)*std::cos(azimuthalAngle),std::sin(polarAngle)*std::sin(azimuthalAngle),std::cos(polarAngle));
+                        Dimension3Vector<std::complex<double>> photonEmissionVector = Dimension3Vector<std::complex<double>>(std::sin(emissionPolarAngle)*std::cos(azimuthalAngle),std::sin(emissionPolarAngle)*std::sin(azimuthalAngle),std::cos(emissionPolarAngle));
                         std::complex<double> I = std::complex<double>(0, 1);
                         Dimension3Vector<std::complex<double>> vortexBasePlus = Dimension3Vector<std::complex<double>>(1,polarizationParameter*I,0)*(-polarizationParameter/std::sqrt(2));
                         Dimension3Vector<std::complex<double>> vortexBaseMinus = Dimension3Vector<std::complex<double>>(1,-polarizationParameter*I,0)*(polarizationParameter/std::sqrt(2));
                         Dimension3Vector<std::complex<double>> vortexBaseZ(0,0,1);
                         Dimension3Vector<std::complex<double>> polarizationVector = (
-                            (vortexBaseMinus*std::exp(I*polarizationParameter*azimuthalAngle)*std::pow(std::sin(polarAngle/2),2))+
-                            (vortexBasePlus*std::exp(-I*polarizationParameter*azimuthalAngle)*std::pow(std::cos(polarAngle/2),2))+
-                            (vortexBaseZ*std::sin(polarAngle)*(polarizationParameter/2))
+                            (vortexBaseMinus*std::exp(I*polarizationParameter*azimuthalAngle)*std::pow(std::sin(emissionPolarAngle/2),2))+
+                            (vortexBasePlus*std::exp(-I*polarizationParameter*azimuthalAngle)*std::pow(std::cos(emissionPolarAngle/2),2))+
+                            (vortexBaseZ*std::sin(emissionPolarAngle)*(polarizationParameter/2))
                         );
                         /*/////////test for polarizationVector
                         Dimension3Vector<std::complex<double>> polarizationVectorBase1 = Dimension3Vector<std::complex<double>>(std::cos(polarAngle)*std::cos(azimuthalAngle),std::cos(polarAngle)*std::sin(azimuthalAngle),-std::sin(polarAngle));
@@ -388,19 +381,22 @@ void RadiationWithSpinAndPolarzation::calculateVortexDifferentialEmissionIntensi
                 );
             
                 std::complex<double> spectralComponentAmplitude = sumOfComponentA*componentASpinCoefficient+sumOfComponentB*componentBSpinCoefficient*std::complex<double>(0,1);
-                integralOfSpectralComponent += spectralComponentAmplitude*std::pow(std::complex<double>(0,1), angularQuantumNumber)*std::exp(std::complex<double>(0,-1)*angularQuantumNumber*azimuthalAngle)*(1.0/std::pow(std::sqrt(2*M_PI),3))*std::sqrt(this->getPhotonEnergy()*std::sin(polarAngle))*azimuthalAngleStep;
+                integralOfSpectralComponent += spectralComponentAmplitude*std::pow(std::complex<double>(0,1), angularQuantumNumber)*std::exp(std::complex<double>(0,-1)*angularQuantumNumber*azimuthalAngle)*(1.0/std::pow(std::sqrt(2*M_PI),3))*std::sqrt(this->getPhotonEnergy()*std::sin(emissionPolarAngle))*azimuthalAngleStep;
             }
-            sumOfSpectralComponent += std::norm(integralOfSpectralComponent);
+            
+            double labelRelatedCoeffcient = -(this->getEnergy()/electronMass)*(labelLeft*this->getOmega1()+labelRight*this->getOmega2());
+            double deltaReplacedSinc = 2*std::sin(nForSinc*(labelRelatedCoeffcient+angleRelatedCoeffcient))/(labelRelatedCoeffcient+angleRelatedCoeffcient);
+            sumOfSpectralComponent += std::norm(integralOfSpectralComponent*deltaReplacedSinc);
         }
     }
 
-    std::cout<<"sumOfSpectralComponentReal: "<<sumOfSpectralComponent<<std::endl;
+    //std::cout<<"sumOfSpectralComponentReal: "<<sumOfSpectralComponent<<std::endl;
     //std::cout<<"sumOfSpectralComponentImag: "<<sumOfSpectralComponentImag<<std::endl;
     //std::cout<<"sumOfSpectralComponentTest: "<<sumOfSpectralComponentTest<<std::endl;
     long double time1 = std::chrono::duration_cast<std::chrono::nanoseconds>(std::chrono::system_clock::now().time_since_epoch()).count();
     std::cout << "Time: " << (time1-time0)/1000000000 << " seconds" << std::endl;
     double fineStructureConstant = 1.0/137;
-    this->setDifferentialEmissionIntensity(((fineStructureConstant*electronMass*electronMass*this->getPhotonEnergy()*this->getResidualEnergy())/(2.0*M_PI*this->getEnergy()*this->getEnergy()*this->getEnergy()))*sumOfSpectralComponent);
+    this->setDifferentialEmissionIntensity(sumOfSpectralComponent);
     std::cout<<"differentialEmissionIntensity: "<<this->getDifferentialEmissionIntensity()<<std::endl;
 }
 

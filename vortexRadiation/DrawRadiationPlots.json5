@@ -28,11 +28,9 @@
     "plot": {
         "begin": 2700,
         "end": 3000,
-        "points": 100
+        "points": 100,
+        "nForSinc": 1e2
     },
-    "emissionPolarAngleLimit":{
-        "min": 0,
-        "max": 10
-    },
+    "emissionPolarAngle":0.0001,
     "outputFile": "30_0_1_2000div-2.txt"
 }

@@ -41,12 +41,12 @@ int main(){
     double begin = parameter["plot"]["begin"];
     double end = parameter["plot"]["end"];
     double step = (end-begin)/(double(parameter["plot"]["points"]));
+    double nForSinc = parameter["plot"]["nForSinc"];
     bool useIncidentSpin = parameter["useIncidentSpin"];
     bool useEmissionSpin = parameter["useEmissionSpin"];
     bool usePolarization = parameter["usePolarization"];
     std::string fileName = parameter["outputFile"];
-    double emissionPolarAngleMin = parameter["emissionPolarAngleLimit"]["min"];
-    double emissionPolarAngleMax = parameter["emissionPolarAngleLimit"]["max"];
+    double emissionPolarAngle = parameter["emissionPolarAngle"];
     //time start
     auto totalTimeBegin = std::chrono::system_clock::now();
     std::fstream file;
@@ -57,9 +57,9 @@ int main(){
                 file<<photonEnergy<<"\t"<<0<<std::endl;
                 continue;
             }
-            RadiationWithSpinAndPolarzation radiationWithSpinAndPolarzation(momentumZPrime,momentumXPrime,fieldParameter1,fieldParameter2,0,photonEnergy,azimuthalAngleOfEmission,spinIncidient,spinEmission,0,0,axisOfIncidentAzimuthalAngleOfElectronSpin,axisOfIncidentPolarAngleOfElectronSpin,axisOfEmissionAzimuthalAngleOfElectronSpin,axisOfEmissionPolarAngleOfElectronSpin,rotationDirection1,rotationDirection2,emissionPolarAngleMin,emissionPolarAngleMax);
-            radiationWithSpinAndPolarzation.calculateVortexDifferentialEmissionIntensity(angularQuantumNumber,polarizationParameter,2000);
-            file<<photonEnergy<<"\t"<<radiationWithSpinAndPolarzation.getDifferentialEmissionIntensity()/(emissionPolarAngleMax-emissionPolarAngleMin)<<std::endl;
+            RadiationWithSpinAndPolarzation radiationWithSpinAndPolarzation(momentumZPrime,momentumXPrime,fieldParameter1,fieldParameter2,0,photonEnergy,azimuthalAngleOfEmission,spinIncidient,spinEmission,0,0,axisOfIncidentAzimuthalAngleOfElectronSpin,axisOfIncidentPolarAngleOfElectronSpin,axisOfEmissionAzimuthalAngleOfElectronSpin,axisOfEmissionPolarAngleOfElectronSpin,rotationDirection1,rotationDirection2,0,0);
+            radiationWithSpinAndPolarzation.calculateVortexDifferentialEmissionIntensity(angularQuantumNumber,polarizationParameter,divisions,emissionPolarAngle,nForSinc);
+            file<<photonEnergy<<"\t"<<radiationWithSpinAndPolarzation.getDifferentialEmissionIntensity()<<std::endl;
             continue;
         }
         else{
