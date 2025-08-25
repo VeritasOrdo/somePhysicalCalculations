@@ -3,7 +3,7 @@
     "fieldParameter2": 1,
     "rotationDirection1": 1,
     "rotationDirection2": 1,
-    "energyPrime": 15330000,
+    "energyPrime": 1000000000,
     "momentumXPrime": 0.0,
     "omega": 1.55,
     "azimuthalAngleOfEmission": 0.0,
@@ -21,16 +21,16 @@
     },
     "usePolarization": true,
     "vortex": {
-        "polarizationParameter": -1.0,
-        "angularQuantumNumber": 0.0,
+        "polarizationParameter": 1.0,
+        "angularQuantumNumber": 1.0,
         "divisionsOfAzimuthalAngle": 2000
     },
     "plot": {
-        "begin": 2700,
-        "end": 3000,
+        "begin": 6000000,
+        "end": 12000000,
         "points": 100,
-        "nForSinc": 1e2
+        "nForSinc": 1
     },
-    "emissionPolarAngle":0.0001,
-    "outputFile": "30_0_1_2000div-2.txt"
+    "emissionPolarAngle":0.35,
+    "outputFile": "1G_1.txt"
 }

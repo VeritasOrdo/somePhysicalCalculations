@@ -3,6 +3,16 @@
 #include <omp.h>
 #include <fstream>  
 
+template <typename T>
+T sinc_unnormalized(T x) {
+    // 当 x 的绝对值非常接近0时，返回1.0
+    // 使用 epsilon 比直接用 x == 0.0 更安全，可以处理极小的非零值
+    if (std::abs(x) < std::numeric_limits<T>::epsilon()) {
+        return T(1.0);
+    }
+    return std::sin(x) / x;
+}
+
 RadiationWithSpinAndPolarzation::RadiationWithSpinAndPolarzation(double momentumZPrime,double momentumXPrime,double fieldParameter1,double fieldParameter2,double properTime,double photonEnergy,double emissionAzimuthalAngle,double spinIncident,double spinEmission,double polarizationAlpha,double polarizationBeta,double axisOfIncidentAzimuthalAngleOfElectronSpin,double axisOfIncidentPolarAngleOfElectronSpin,double axisOfEmissionAzimuthalAngleOfElectronSpin,double axisOfEmissionPolarAngleOfElectronSpin,double rotationDirection1, double rotationDirection2,double emissionPolarAngleMin,double emissionPolarAngleMax) : BasicRadiationOfElectronInCounterpropagatingLaser(momentumZPrime,momentumXPrime,fieldParameter1,fieldParameter2,properTime,photonEnergy,emissionAzimuthalAngle,rotationDirection1,rotationDirection2) {
     this->spinIncident = spinIncident;
     this->spinEmission = spinEmission;
@@ -337,13 +347,19 @@ void RadiationWithSpinAndPolarzation::calculateVortexDifferentialEmissionIntensi
             }
         }
         
-        for(int labelRight = -labelRightLimit; labelRight <=labelRightLimit; labelRight++) {
+        int labelRightMidium = int((angleRelatedCoeffcient/(this->getEnergy()/electronMass)-(labelLeft*this->getOmega1()))/this->getOmega2());
+
+        for(int labelRight = labelRightMidium-labelRightLimit; labelRight <=labelRightMidium+labelRightLimit; labelRight++) {
             std::complex<double> integralOfSpectralComponent = 0;
 
             //std::cout<<"SL: "<<labelLeft<<", SR: "<<labelRight<<std::endl;
             double labelRelatedCoeffcient = -(this->getEnergy()/electronMass)*(labelLeft*this->getOmega1()+labelRight*this->getOmega2());
-            double deltaReplacedSinc = 2*std::sin(nForSinc*(labelRelatedCoeffcient+angleRelatedCoeffcient))/(labelRelatedCoeffcient+angleRelatedCoeffcient);
-
+            double deltaReplacedSinc = 2*nForSinc*sinc_unnormalized(nForSinc*(labelRelatedCoeffcient+angleRelatedCoeffcient));
+            /*if(std::abs(deltaReplacedSinc)<2*nForSinc*1e-5){
+                continue;
+            }
+            std::cout<<"labelRelatedCoeffcient+angleRelatedCoeffcient: "<<labelRelatedCoeffcient+angleRelatedCoeffcient<<std::endl;
+            std::cout<<"deltaReplacedSinc: "<<deltaReplacedSinc<<std::endl;*/
             //std::cout<<"sinc: "<<deltaReplacedSinc<<std::endl;
         
             for(int azimuthalAngleLabel = 0; azimuthalAngleLabel < azimuthalAngleDivisions; azimuthalAngleLabel++) {
