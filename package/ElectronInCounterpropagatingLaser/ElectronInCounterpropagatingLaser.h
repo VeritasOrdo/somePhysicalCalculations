@@ -1,6 +1,7 @@
 #include "../LorentzVector/LorentzVector.h"
 #include<cmath>
 #include<vector>
+#include<memory>
 #pragma once
 
 class ElectronInCounterpropagatingLaser {
@@ -8,9 +9,9 @@ class ElectronInCounterpropagatingLaser {
         const double omega=1.55;
         const double electronMass = 511000;
     private:
-        LorentzVector *electronLorentzMomentum;
-        LorentzVector *electronLorentzMomentumPrime;
-        LorentzVector *electronLorentzCoordinate;
+        std::shared_ptr<LorentzVector> electronLorentzMomentum;
+        std::shared_ptr<LorentzVector> electronLorentzMomentumPrime;
+        std::shared_ptr<LorentzVector> electronLorentzCoordinate;
         std::vector<double> electronVelocity;
         std::vector<double> electronVelocityPrime;
         double fieldParameter1;

@@ -9,11 +9,11 @@ ElectronInCounterpropagatingLaser::ElectronInCounterpropagatingLaser(double mome
     this->properTime = properTime;
     double reducedMass = electronMass*std::sqrt(1+this->fieldParameter1*this->fieldParameter1+this->fieldParameter2*this->fieldParameter2);
     double enengyPrime = std::sqrt(momentumXPrime*momentumXPrime+momentumYPrime*momentumYPrime+momentumZPrime*momentumZPrime+reducedMass*reducedMass);
-    this->electronLorentzMomentumPrime = new LorentzVector(enengyPrime,momentumXPrime,momentumYPrime,momentumZPrime);
+    this->electronLorentzMomentumPrime = std::make_shared<LorentzVector>(enengyPrime,momentumXPrime,momentumYPrime,momentumZPrime);
     this->electronVelocityPrime={(*this->electronLorentzMomentumPrime)[1]/(*this->electronLorentzMomentumPrime)[0],(*this->electronLorentzMomentumPrime)[2]/(*this->electronLorentzMomentumPrime)[0],(*this->electronLorentzMomentumPrime)[3]/(*this->electronLorentzMomentumPrime)[0]};
     this->phase1 = ((omega*(*this->electronLorentzMomentumPrime)[0]*(1-this->electronVelocityPrime[2]))/electronMass)*this->properTime;
     this->phase2 = ((omega*(*this->electronLorentzMomentumPrime)[0]*(1+this->electronVelocityPrime[2]))/electronMass)*this->properTime;
-    this->electronLorentzMomentum = new LorentzVector(
+    this->electronLorentzMomentum = std::make_shared<LorentzVector>(
         (*this->electronLorentzMomentumPrime)[0]+
         (*this->electronLorentzMomentumPrime)[1]*omega*(
             ((electronMass*fieldParameter1)/(omega*(*this->electronLorentzMomentumPrime)[0]*(1-this->electronVelocityPrime[2])))*std::cos(this->phase1)+
@@ -34,7 +34,7 @@ ElectronInCounterpropagatingLaser::ElectronInCounterpropagatingLaser(double mome
         ((2*electronMass*electronMass*fieldParameter1*fieldParameter2*omega)/(-2*omega*(*this->electronLorentzMomentumPrime)[0]*this->electronVelocityPrime[2]))*std::cos(this->phase1-this->phase2)
     );
     this->electronVelocity={(*this->electronLorentzMomentum)[1]/(*this->electronLorentzMomentum)[0],(*this->electronLorentzMomentum)[2]/(*this->electronLorentzMomentum)[0],(*this->electronLorentzMomentum)[3]/(*this->electronLorentzMomentum)[0]};
-    this->electronLorentzCoordinate = new LorentzVector(
+    this->electronLorentzCoordinate = std::make_shared<LorentzVector>(
         ((*this->electronLorentzMomentumPrime)[0]/electronMass)*this->properTime+
         (*this->electronLorentzMomentumPrime)[1]*omega*(
             ((electronMass*fieldParameter1)/((omega*(*this->electronLorentzMomentumPrime)[0]*(1-this->electronVelocityPrime[2]))*(omega*(*this->electronLorentzMomentumPrime)[0]*(1-this->electronVelocityPrime[2]))))*std::sin(this->phase1)+
@@ -130,7 +130,4 @@ double ElectronInCounterpropagatingLaser::getVelocityXPrime() {
 }
 
 ElectronInCounterpropagatingLaser::~ElectronInCounterpropagatingLaser() {
-    delete this->electronLorentzMomentum;
-    delete this->electronLorentzMomentumPrime;
-    delete this->electronLorentzCoordinate;
 }

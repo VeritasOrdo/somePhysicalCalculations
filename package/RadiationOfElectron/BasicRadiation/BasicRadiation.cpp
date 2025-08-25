@@ -511,6 +511,5 @@ void BasicRadiationOfElectronInCounterpropagatingLaser::test() {
 }
 
 BasicRadiationOfElectronInCounterpropagatingLaser::~BasicRadiationOfElectronInCounterpropagatingLaser() {
-    std::cout << "The object has been deleted" << std::endl;
 }
 
