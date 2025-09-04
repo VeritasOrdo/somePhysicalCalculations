@@ -287,9 +287,9 @@ void RadiationWithSpinAndPolarzation::calculateVortexDifferentialEmissionIntensi
     int labelLeftLimit = labelLimits[0]+labelLimits[2];
     int labelRightLimit = labelLimits[1]+labelLimits[2];
     int label3Limit = labelLimits[2];
-    labelLeftLimit = labelLeftLimit*2;
-    labelRightLimit = labelRightLimit*2;
-    label3Limit = label3Limit*2;
+    //labelLeftLimit = labelLeftLimit*2;
+    //labelRightLimit = labelRightLimit*2;
+    //label3Limit = label3Limit*2;
     std::cout << "labelLeft: " << labelLeftLimit << std::endl;
     std::cout << "labelRight: " << labelRightLimit << std::endl;
     std::cout << "label3: " << label3Limit << std::endl;
@@ -368,7 +368,11 @@ void RadiationWithSpinAndPolarzation::calculateVortexDifferentialEmissionIntensi
                 std::complex<double> integralOfSpectralComponent = 0;
 
                 double labelRelatedCoeffcient = -(this->getEnergy() / electronMass) * (labelLeft * this->getOmega1() + labelRight * this->getOmega2());
-                double deltaReplacedSinc = 2 * nForSinc * sinc_unnormalized(nForSinc * (labelRelatedCoeffcient + angleRelatedCoeffcient));
+                double deltaCoeffcient = labelRelatedCoeffcient + angleRelatedCoeffcient;
+                if(labelRelatedCoeffcient + angleRelatedCoeffcient > nForSinc){
+                    continue;
+                }
+                double deltaReplacedSinc = sinc_unnormalized(deltaCoeffcient)*sinc_unnormalized(deltaCoeffcient/nForSinc);
 
                 std::complex<double> sumOfComponentA = 0;
                 Dimension3Vector<std::complex<double>> sumOfComponentB = Dimension3Vector<std::complex<double>>(0, 0, 0);

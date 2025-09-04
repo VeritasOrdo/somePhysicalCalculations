@@ -23,14 +23,14 @@
     "vortex": {
         "polarizationParameter": 1.0,
         "angularQuantumNumber": 1.0,
-        "divisionsOfAzimuthalAngle": 2000
+        "divisionsOfAzimuthalAngle": 500
     },
     "plot": {
-        "begin": 6000000,
-        "end": 12000000,
-        "points": 100,
-        "nForSinc": 1
+        "begin": 9000000,
+        "end": 11000000,
+        "points": 500,
+        "nForSinc": 3
     },
-    "emissionPolarAngle":0.35,
-    "outputFile": "1G_1.txt"
+    "emissionPolarAngle":0.00035,
+    "outputFile": "1G_1_val_3.txt"
 }
