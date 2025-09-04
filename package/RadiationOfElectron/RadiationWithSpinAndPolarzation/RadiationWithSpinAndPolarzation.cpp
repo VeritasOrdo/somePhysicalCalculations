@@ -287,6 +287,9 @@ void RadiationWithSpinAndPolarzation::calculateVortexDifferentialEmissionIntensi
     int labelLeftLimit = labelLimits[0]+labelLimits[2];
     int labelRightLimit = labelLimits[1]+labelLimits[2];
     int label3Limit = labelLimits[2];
+    labelLeftLimit = labelLeftLimit*2;
+    labelRightLimit = labelRightLimit*2;
+    label3Limit = label3Limit*2;
     std::cout << "labelLeft: " << labelLeftLimit << std::endl;
     std::cout << "labelRight: " << labelRightLimit << std::endl;
     std::cout << "label3: " << label3Limit << std::endl;
