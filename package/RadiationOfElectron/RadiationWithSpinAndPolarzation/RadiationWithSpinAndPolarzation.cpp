@@ -299,7 +299,7 @@ void RadiationWithSpinAndPolarzation::calculateVortexDifferentialEmissionIntensi
     std::cout<<"max thread: "<<omp_get_max_threads()<<std::endl;
     std::cout << "label left limit min: " << -std::min(std::max(labelLeftLimit/100,500),40000) << std::endl;
     double azimuthalAngleStep = 2*M_PI/azimuthalAngleDivisions;
-    double angleRelatedCoeffcient = ((this->getPhotonEnergy()/(this->getEnergy()-this->getPhotonEnergy()))*this->getEnergy()*this->getEnergy()/electronMass)*(1-this->getVelocityZPrime()*std::cos(emissionPolarAngle));
+    double angleRelatedCoeffcient = ((this->getPhotonEnergy()/(this->getEnergy()-this->getPhotonEnergy()))*this->getEnergy()*this->getEnergy()/electronMass)*(1-(this->getVelocityZPrime()*std::cos(emissionPolarAngle)));
     
     // 在临界区外进行自旋系数计算
     std::complex<double> componentASpinCoefficient = (
@@ -368,10 +368,11 @@ void RadiationWithSpinAndPolarzation::calculateVortexDifferentialEmissionIntensi
                 std::complex<double> integralOfSpectralComponent = 0;
 
                 double labelRelatedCoeffcient = -(this->getEnergy() / electronMass) * (labelLeft * this->getOmega1() + labelRight * this->getOmega2());
-                double deltaCoeffcient = labelRelatedCoeffcient + angleRelatedCoeffcient;
-                if(labelRelatedCoeffcient + angleRelatedCoeffcient > nForSinc){
+                if(std::abs(labelRelatedCoeffcient + angleRelatedCoeffcient) > nForSinc){
                     continue;
                 }
+                double deltaCoeffcient = labelRelatedCoeffcient + angleRelatedCoeffcient;
+                
                 double deltaReplacedSinc = sinc_unnormalized(deltaCoeffcient)*sinc_unnormalized(deltaCoeffcient/nForSinc);
 
                 std::complex<double> sumOfComponentA = 0;
