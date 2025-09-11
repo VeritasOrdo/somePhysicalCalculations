@@ -385,6 +385,10 @@ void RadiationWithSpinAndPolarzation::calculateVortexDifferentialEmissionIntensi
                 
                 double deltaReplacedSinc = sinc_unnormalized(deltaCoeffcient)*sinc_unnormalized(deltaCoeffcient/nForSinc)*(1/normalizedConstant(nForSinc));
 
+                if(nForSinc<1){
+                    deltaReplacedSinc = sinc_unnormalized(deltaCoeffcient/nForSinc)/deltaCoeffcient/M_PI;
+                }
+
                 std::complex<double> sumOfComponentA = 0;
                 Dimension3Vector<std::complex<double>> sumOfComponentB = Dimension3Vector<std::complex<double>>(0, 0, 0);
 
