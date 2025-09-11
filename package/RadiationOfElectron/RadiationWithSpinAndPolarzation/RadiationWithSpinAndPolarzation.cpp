@@ -1,7 +1,8 @@
 #include "RadiationWithSpinAndPolarzation.h"
 #include <chrono>
 #include <omp.h>
-#include <fstream>  
+#include <fstream>
+#include <gsl/gsl_sf_expint.h>
 
 template <typename T>
 T sinc_unnormalized(T x) {
@@ -11,6 +12,15 @@ T sinc_unnormalized(T x) {
         return T(1.0);
     }
     return std::sin(x) / x;
+}
+
+double normalizedConstant(double a) {
+    double Si_p = gsl_sf_Si(a + 1.0);
+    double Si_m = gsl_sf_Si(a - 1.0);
+    double cossum = cos(a - 1.0) - cos(a + 1.0);
+    return cossum
+         + (a + 1.0) * Si_p
+         - (a - 1.0) * Si_m;
 }
 
 RadiationWithSpinAndPolarzation::RadiationWithSpinAndPolarzation(double momentumZPrime,double momentumXPrime,double fieldParameter1,double fieldParameter2,double properTime,double photonEnergy,double emissionAzimuthalAngle,double spinIncident,double spinEmission,double polarizationAlpha,double polarizationBeta,double axisOfIncidentAzimuthalAngleOfElectronSpin,double axisOfIncidentPolarAngleOfElectronSpin,double axisOfEmissionAzimuthalAngleOfElectronSpin,double axisOfEmissionPolarAngleOfElectronSpin,double rotationDirection1, double rotationDirection2,double emissionPolarAngleMin,double emissionPolarAngleMax) : BasicRadiationOfElectronInCounterpropagatingLaser(momentumZPrime,momentumXPrime,fieldParameter1,fieldParameter2,properTime,photonEnergy,emissionAzimuthalAngle,rotationDirection1,rotationDirection2) {
@@ -373,7 +383,7 @@ void RadiationWithSpinAndPolarzation::calculateVortexDifferentialEmissionIntensi
                 }
                 double deltaCoeffcient = labelRelatedCoeffcient + angleRelatedCoeffcient;
                 
-                double deltaReplacedSinc = sinc_unnormalized(deltaCoeffcient)*sinc_unnormalized(deltaCoeffcient/nForSinc);
+                double deltaReplacedSinc = sinc_unnormalized(deltaCoeffcient)*sinc_unnormalized(deltaCoeffcient/nForSinc)*(1/normalizedConstant(nForSinc));
 
                 std::complex<double> sumOfComponentA = 0;
                 Dimension3Vector<std::complex<double>> sumOfComponentB = Dimension3Vector<std::complex<double>>(0, 0, 0);
