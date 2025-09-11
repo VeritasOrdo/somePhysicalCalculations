@@ -378,16 +378,16 @@ void RadiationWithSpinAndPolarzation::calculateVortexDifferentialEmissionIntensi
                 std::complex<double> integralOfSpectralComponent = 0;
 
                 double labelRelatedCoeffcient = -(this->getEnergy() / electronMass) * (labelLeft * this->getOmega1() + labelRight * this->getOmega2());
-                if(std::abs(labelRelatedCoeffcient + angleRelatedCoeffcient) > nForSinc){
+                /*if(std::abs(labelRelatedCoeffcient + angleRelatedCoeffcient) > nForSinc){
                     continue;
-                }
+                }*/
                 double deltaCoeffcient = labelRelatedCoeffcient + angleRelatedCoeffcient;
                 
                 double deltaReplacedSinc = sinc_unnormalized(deltaCoeffcient)*sinc_unnormalized(deltaCoeffcient/nForSinc)*(1/normalizedConstant(nForSinc));
 
-                if(nForSinc<1){
-                    deltaReplacedSinc = sinc_unnormalized(deltaCoeffcient/nForSinc)/deltaCoeffcient/M_PI;
-                }
+                /*if(nForSinc<1){
+                    deltaReplacedSinc = sinc_unnormalized(deltaCoeffcient/nForSinc)/nForSinc/M_PI;
+                }*/
 
                 std::complex<double> sumOfComponentA = 0;
                 Dimension3Vector<std::complex<double>> sumOfComponentB = Dimension3Vector<std::complex<double>>(0, 0, 0);
