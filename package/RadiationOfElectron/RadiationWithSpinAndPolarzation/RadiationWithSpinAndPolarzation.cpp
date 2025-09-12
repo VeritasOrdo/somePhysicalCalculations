@@ -378,9 +378,9 @@ void RadiationWithSpinAndPolarzation::calculateVortexDifferentialEmissionIntensi
                 std::complex<double> integralOfSpectralComponent = 0;
 
                 double labelRelatedCoeffcient = -(this->getEnergy() / electronMass) * (labelLeft * this->getOmega1() + labelRight * this->getOmega2());
-                /*if(std::abs(labelRelatedCoeffcient + angleRelatedCoeffcient) > nForSinc){
+                if(std::abs(labelRelatedCoeffcient + angleRelatedCoeffcient) > nForSinc){
                     continue;
-                }*/
+                }
                 double deltaCoeffcient = labelRelatedCoeffcient + angleRelatedCoeffcient;
                 
                 double deltaReplacedSinc = sinc_unnormalized(deltaCoeffcient)*sinc_unnormalized(deltaCoeffcient/nForSinc)*(1/normalizedConstant(nForSinc));
