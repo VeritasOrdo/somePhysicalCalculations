@@ -378,15 +378,18 @@ void RadiationWithSpinAndPolarzation::calculateVortexDifferentialEmissionIntensi
                 std::complex<double> integralOfSpectralComponent = 0;
 
                 double labelRelatedCoeffcient = -(this->getEnergy() / electronMass) * (labelLeft * this->getOmega1() + labelRight * this->getOmega2());
-                if(std::abs(labelRelatedCoeffcient + angleRelatedCoeffcient) > 10){
-                    continue;
-                }
                 double deltaCoeffcient = labelRelatedCoeffcient + angleRelatedCoeffcient;
-                
-                double deltaReplacedSinc = sinc_unnormalized(deltaCoeffcient)*sinc_unnormalized(deltaCoeffcient/nForSinc)*(1/normalizedConstant(nForSinc));
 
-                if(nForSinc<1){
-                    deltaReplacedSinc = sinc_unnormalized(deltaCoeffcient/nForSinc)/nForSinc/M_PI;
+                // 使用 Fejér（sinc^2）核作为 δ 的近似，nForSinc 控制锐度
+                double T = std::max(1.0, nForSinc);
+                double a = 0.5 * T; // 对应时间窗 [-T/2, T/2]
+                // 归一化非负核：∫ (a/π)·sinc(a x)^2 dx = 1
+                double deltaReplacedSinc = (a / M_PI) * std::pow(sinc_unnormalized(a * deltaCoeffcient), 2);
+
+                // 自适应截断：按主瓣宽度 2π/a，留出 ±3 个主瓣
+                double keepWidth = 6.0 * (M_PI / a);
+                if (std::abs(deltaCoeffcient) > keepWidth) {
+                    continue;
                 }
 
                 std::complex<double> sumOfComponentA = 0;
