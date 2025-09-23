@@ -162,11 +162,11 @@ double BasicRadiationOfElectronInCounterpropagatingLaser::trigonometricCoefficie
 }
 
 double BasicRadiationOfElectronInCounterpropagatingLaser::auxiliaryAngle1(double emissionPolarAngle) {
-    return atan(this->calculateZ1Y(emissionPolarAngle)/this->calculateZ1X(emissionPolarAngle));
+    return atan2(this->calculateZ1Y(emissionPolarAngle),this->calculateZ1X(emissionPolarAngle));
 }
 
 double BasicRadiationOfElectronInCounterpropagatingLaser::auxiliaryAngle2(double emissionPolarAngle) {
-    return atan(this->calculateZ2Y(emissionPolarAngle)/this->calculateZ2X(emissionPolarAngle));
+    return atan2(this->calculateZ2Y(emissionPolarAngle),this->calculateZ2X(emissionPolarAngle));
 }
 
 std::vector<std::complex<double>> BasicRadiationOfElectronInCounterpropagatingLaser::SpectralComponent(int labelLeft, int labelRight, int label3, double emissionPolarAngle) {

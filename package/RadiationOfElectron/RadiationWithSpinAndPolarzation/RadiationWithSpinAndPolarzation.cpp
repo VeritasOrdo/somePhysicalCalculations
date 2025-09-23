@@ -407,6 +407,11 @@ void RadiationWithSpinAndPolarzation::calculateVortexDifferentialEmissionIntensi
                     Dimension3Vector<std::complex<double>> polarizationVector = ((vortexBaseMinus * std::exp(I * polarizationParameter * azimuthalAngle) * std::pow(std::sin(emissionPolarAngle / 2), 2)) +
                                                                                  (vortexBasePlus * std::exp(-I * polarizationParameter * azimuthalAngle) * std::pow(std::cos(emissionPolarAngle / 2), 2)) +
                                                                                  (vortexBaseZ * std::sin(emissionPolarAngle) * (polarizationParameter / 2)));
+                    /*double polarizationAlpha = 0.7853981633974483;
+                    double polarizationBeta = 1.5707963267948966;
+                    Dimension3Vector<std::complex<double>> polarizationVectorBase1 = Dimension3Vector<std::complex<double>>(std::cos(emissionPolarAngle)*std::cos(azimuthalAngle),std::cos(emissionPolarAngle)*std::sin(azimuthalAngle),-std::sin(emissionPolarAngle));
+                    Dimension3Vector<std::complex<double>> polarizationVectorBase2 = Dimension3Vector<std::complex<double>>(-std::sin(azimuthalAngle),std::cos(azimuthalAngle),0);
+                    Dimension3Vector<std::complex<double>> polarizationVector = polarizationVectorBase1*std::cos(polarizationAlpha)+polarizationVectorBase2*std::sin(polarizationAlpha)*std::exp(std::complex<double>(0,polarizationBeta));*/
                     Dimension3Vector<std::complex<double>> polarizationVectorConjugate = polarizationVector.conjugate();
                     double firstRatioOfEnergy = std::sqrt((this->getResidualEnergy() + this->electronMass) / (this->getEnergy() + this->electronMass));
                     double secondRatioOfEnergy = 1 / firstRatioOfEnergy;
@@ -417,7 +422,7 @@ void RadiationWithSpinAndPolarzation::calculateVortexDifferentialEmissionIntensi
 
                 std::complex<double> spectralComponentAmplitude = sumOfComponentA * componentASpinCoefficient + sumOfComponentB * componentBSpinCoefficient * std::complex<double>(0, 1);
                 integralOfSpectralComponent = spectralComponentAmplitude * std::pow(std::complex<double>(0, 1), angularQuantumNumber) * std::exp(std::complex<double>(0, -1) * angularQuantumNumber * azimuthalAngle) * (1.0 / std::pow(std::sqrt(2 * M_PI), 3)) * std::sqrt(this->getPhotonEnergy() * std::sin(emissionPolarAngle)) * azimuthalAngleStep;
-
+                
                 sumOfSpectralComponentReal += (integralOfSpectralComponent * deltaReplacedSinc).real();
                 sumOfSpectralComponentImag += (integralOfSpectralComponent * deltaReplacedSinc).imag();
             }
@@ -698,7 +703,7 @@ Dimension3Vector<double> RadiationWithSpinAndPolarzation::getIncidentOrientation
 }
 
 Dimension3Vector<double> RadiationWithSpinAndPolarzation::getEmissionOrientationAxis() {
-    return incidentOrientationAxis;
+    return emissionOrientationAxis;
 }
 
 std::vector<double> RadiationWithSpinAndPolarzation::getStokesParameter() {

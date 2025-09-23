@@ -1,9 +1,9 @@
 {
-    "fieldParameter1": 1e-300,
-    "fieldParameter2": 1,
+    "fieldParameter1": 3,
+    "fieldParameter2": 2.24,
     "rotationDirection1": 1,
     "rotationDirection2": 1,
-    "energyPrime": 15330000,
+    "energyPrime": 14604431.100000001,
     "momentumXPrime": 0.0,
     "omega": 1.55,
     "azimuthalAngleOfEmission": 0.0,

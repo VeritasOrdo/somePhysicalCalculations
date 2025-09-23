@@ -1,5 +1,5 @@
 {
-    "fieldParameter1": 0.1,
+    "fieldParameter1": 1e-300,
     "fieldParameter2": 1,
     "rotationDirection1": 1,
     "rotationDirection2": 1,
@@ -26,11 +26,11 @@
         "divisionsOfAzimuthalAngle": 500
     },
     "plot": {
-        "begin": 2765,
-        "end": 2780,
-        "points": 1000,
-        "nForSinc": 1e2
+        "begin": 7800,
+        "end": 8300,
+        "points": 200,
+        "nForSinc": 1e1
     },
-    "emissionPolarAngle":0.00035,
-    "outputFile": "30gamma_0.1_1_test_m1_n0.1_2765_2780_2.txt"
+    "emissionPolarAngle":0.005,
+    "outputFile": "test_30gamma_0_1_m3_1+i_7800_8300.txt"
 }
