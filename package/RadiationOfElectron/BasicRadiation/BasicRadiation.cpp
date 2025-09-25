@@ -125,16 +125,14 @@ std::vector<int> BasicRadiationOfElectronInCounterpropagatingLaser::calculateLab
 }
 
 double BasicRadiationOfElectronInCounterpropagatingLaser::calculateZ1X(double emissionPolarAngle) {
-    //std::cout<<"========================"<<std::endl;
-    //std::cout<<"electronMass: "<<electronMass<<" fieldParameter1: "<<this->getFieldParameter1()<<" energyRatio: "<<energyRatio<<" omega: "<<omega<<" getOmega1: "<<this->getOmega1()<<" getEnergy: "<<this->getEnergy()<<" getVelocityXPrime: "<<this->getVelocityXPrime()<<" emissionAzimuthalAngle: "<<this->emissionAzimuthalAngle<<" emissionPolarAngle: "<<emissionPolarAngle<<std::endl;
-    return ((electronMass*this->getFieldParameter1()*energyRatio)/(this->getOmega1()))*(
+        return ((electronMass*this->getFieldParameter1()*energyRatio)/(this->getOmega1()))*(
         std::cos(this->emissionAzimuthalAngle)*std::sin(emissionPolarAngle)+
         ((this->getVelocityXPrime()*omega)/(this->getOmega1()*this->getEnergy()))*(std::cos(emissionPolarAngle)-1)
     );
 }
 
 double BasicRadiationOfElectronInCounterpropagatingLaser::calculateZ1Y(double emissionPolarAngle) {
-    return ((electronMass*this->getFieldParameter1()*energyRatio)/(this->getOmega1()))*std::sin(this->emissionAzimuthalAngle)*std::sin(emissionPolarAngle);
+    return ((electronMass*this->getFieldParameter1()*energyRatio)/(this->getOmega1()))*std::sin(this->emissionAzimuthalAngle)*std::sin(emissionPolarAngle)*(rotationDirection1);
 }
 
 double BasicRadiationOfElectronInCounterpropagatingLaser::calculateZ2X(double emissionPolarAngle) {
@@ -145,7 +143,7 @@ double BasicRadiationOfElectronInCounterpropagatingLaser::calculateZ2X(double em
 }
 
 double BasicRadiationOfElectronInCounterpropagatingLaser::calculateZ2Y(double emissionPolarAngle) {
-    return ((electronMass*this->getFieldParameter2()*energyRatio)/(this->getOmega2()))*std::sin(this->emissionAzimuthalAngle)*std::sin(emissionPolarAngle);
+    return ((electronMass*this->getFieldParameter2()*energyRatio)/(this->getOmega2()))*std::sin(this->emissionAzimuthalAngle)*std::sin(emissionPolarAngle)*(rotationDirection2);
 }
 
 double BasicRadiationOfElectronInCounterpropagatingLaser::trigonometricCoefficient1(double emissionPolarAngle) {
@@ -157,8 +155,16 @@ double BasicRadiationOfElectronInCounterpropagatingLaser::trigonometricCoefficie
 }
 
 double BasicRadiationOfElectronInCounterpropagatingLaser::trigonometricCoefficient3(double emissionPolarAngle) {
-    //std::cout<<"trigonometricCoefficient3: "<<((electronMass*electronMass*this->getFieldParameter1()*this->getFieldParameter2()*energyRatio)/(this->getVelocityZPrime()*(this->getOmega2()-this->getOmega1())*this->getEnergy()))<<std::endl;
-    return ((electronMass*electronMass*this->getFieldParameter1()*this->getFieldParameter2()*energyRatio)/(this->getVelocityZPrime()*(this->getOmega2()-this->getOmega1())*this->getEnergy()))*std::cos(emissionPolarAngle); 
+    if(std::abs(rotationDirectionMinus) < 1e-300){
+        return ((electronMass*electronMass*this->getFieldParameter1()*this->getFieldParameter2()*energyRatio*1.55*2)/(std::pow((this->getOmega2()+this->getOmega1()),2)*this->getEnergy()))*std::cos(emissionPolarAngle);         
+    }
+    else if(std::abs(rotationDirectionPlus) < 1e-300){
+        //std::cout<<"trigonometricCoefficient3: "<<((electronMass*electronMass*this->getFieldParameter1()*this->getFieldParameter2()*energyRatio)/(this->getVelocityZPrime()*(this->getOmega2()-this->getOmega1())*this->getEnergy()))<<std::endl;
+        return ((electronMass*electronMass*this->getFieldParameter1()*this->getFieldParameter2()*energyRatio)/(this->getVelocityZPrime()*(this->getOmega2()-this->getOmega1())*this->getEnergy()))*std::cos(emissionPolarAngle);         
+    }
+    else{
+        throw("rotationDirection is wrong!");
+    }
 }
 
 double BasicRadiationOfElectronInCounterpropagatingLaser::auxiliaryAngle1(double emissionPolarAngle) {

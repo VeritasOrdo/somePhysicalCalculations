@@ -1,8 +1,8 @@
 {
-    "fieldParameter1": 1e-300,
+    "fieldParameter1": 0.1,
     "fieldParameter2": 1,
     "rotationDirection1": 1,
-    "rotationDirection2": 1,
+    "rotationDirection2": -1,
     "energyPrime": 15330000,
     "momentumXPrime": 0.0,
     "omega": 1.55,
@@ -22,15 +22,15 @@
     "usePolarization": true,
     "vortex": {
         "polarizationParameter": 1.0,
-        "angularQuantumNumber": 1.0,
+        "angularQuantumNumber": -1.0,
         "divisionsOfAzimuthalAngle": 500
     },
     "plot": {
-        "begin": 7800,
-        "end": 8300,
+        "begin": 2765,
+        "end": 2779,
         "points": 200,
-        "nForSinc": 1e1
+        "nForSinc": 1e3
     },
-    "emissionPolarAngle":0.005,
-    "outputFile": "test_30gamma_0_1_m3_1+i_7800_8300.txt"
+    "emissionPolarAngle":0.0003,
+    "outputFile": "test_30gamma_conter_0.1_1_m-1_2765_2779.txt"
 }
